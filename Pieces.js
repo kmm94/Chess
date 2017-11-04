@@ -39,12 +39,39 @@ class Team {
     }
 }
 
+function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
+
+}
+
 class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
+    possiblemoves(){
+        var dict = {};
 
+        if(this.team === "White"){
+            var oneMoveForward = this.position.yGet + 1;
+            //first move
+            if(this.position.yGet = 2){
+                if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
+                    dict.add(new Position(this.position.xGet, oneMoveForward));
+                    if(isVacant(new Position(this.position.xGet, oneMoveForward + 1))){
+                        dict.add(dict.add(new Position(this.position.xGet, oneMoveForward + 1));
+                    }
+                }
+            } else
+            //One move forward
+            if(isVacant(new Position(this.position.xGet, oneMoveForward))){
+                dict.add(new Position(this.position.xGet, oneMoveForward))
+            }
+            //Attack move
+            if(!isVacant(new Position(this.position.xGet, oneMoveForward)){
+
+        }
+
+    }
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team.getTeam()));
     }
@@ -57,6 +84,10 @@ class Pawn {
         }
     }
 
+        upgrade() {
+            new Queen(this.position.getPosition, this.team.getTeam);
+        }
+}
 
 }
 
