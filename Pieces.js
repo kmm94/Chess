@@ -35,7 +35,7 @@ class Team {
     }
 }
 
-function isVacant(Position) {//checks if the given position has a piece on it
+function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
 
 }
 
@@ -48,19 +48,22 @@ class Pawn {
         var dict = {};
 
         if(this.team === "White"){
-            var oneMoveForward = new Position(this.position.xGet, this.position.yGet+1);
+            var oneMoveForward = this.position.yGet + 1;
+            //first move
             if(this.position.yGet = 2){
-                if(isVacant(oneMoveForward)) {
-                    dict.add(oneMoveForward);
-                    if(isVacant(oneMoveForward.ypos+1)){
-                        dict.add(dict.add(oneMoveForward.yGet);
+                if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
+                    dict.add(new Position(this.position.xGet, oneMoveForward));
+                    if(isVacant(new Position(this.position.xGet, oneMoveForward + 1))){
+                        dict.add(dict.add(new Position(this.position.xGet, oneMoveForward + 1));
                     }
                 }
-
+            } else
+            //One move forward
+            if(isVacant(new Position(this.position.xGet, oneMoveForward))){
+                dict.add(new Position(this.position.xGet, oneMoveForward))
             }
-            if( isVacant(this.position.yGet() +1)){
-                dict.add(new Position(this.position.xGet, ))
-            }
+            //Attack move
+            if(!isVacant(new Position(this.position.xGet, oneMoveForward)){
 
         }
 
