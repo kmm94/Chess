@@ -36,6 +36,48 @@ class Team {
 }
 
 function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
+}
+function moveXpos(xPos, toTheRight) {
+    var x = xPos.toUpperCase();
+    if(toTheRight){
+        switch (x){
+            case "A":
+                return "B";
+            case "B":
+                return "C";
+            case "C":
+                return "D";
+            case "D":
+                return "E";
+            case "E":
+                return "F";
+            case "F":
+                return "G";
+            case "G":
+                return "H";
+            case "H":
+                return null;
+        }
+    } else {
+        switch (x){
+            case "A":
+                return null;
+            case "B":
+                return "A";
+            case "C":
+                return "B";
+            case "D":
+                return "C";
+            case "E":
+                return "D";
+            case "F":
+                return "E";
+            case "G":
+                return "F";
+            case "H":
+                return "G";
+        }
+    }
 
 }
 
