@@ -1,3 +1,2 @@
 # Chess
 GAYYYYY
-faggot
