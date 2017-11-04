@@ -1,4 +1,3 @@
 # Chess
 GAYYYYY
-hej
 faggot
