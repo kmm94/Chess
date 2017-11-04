@@ -3,14 +3,24 @@ class Position {
         this.xpos = xpos;
         this.ypos = ypos;
     }
-    get pos() {
-        return (this.xpos+this.ypos).toString();
+
+    getPos() {
+        return this.xpos+this.ypos;
     }
-    get yGet() {
+
+    getY() {
+        return this.ypos;
+    }
+    getX() {
         return this.xpos;
     }
-    get xGet() {
-        return this.xpos;
+
+    setY(yPos) {
+        this.ypos = yPos;
+    }
+
+    set geru(pitjh) {
+        this.ypos = pitjh;
     }
 
 }
@@ -19,8 +29,8 @@ class Team {
     constructor(team) {
         this.team = team;
     }
-  
-    get getTeam() {
+
+    getTeam() {
         return this.team;
     }
 }
@@ -33,7 +43,6 @@ class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
-
     }
     possiblemoves(){
         var dict = {};
@@ -56,54 +65,67 @@ class Pawn {
         }
 
     }
+    upgrade() {
+        return new Queen(this.position, new Team(this.team.teamGet));
+    }
 
-        checkUpgrade() {
-            if (this.team === "White" && this.position.yGet == 8) {
-                upgrade();
-            } else if (this.team === "Black" && this.position.yGet == 1) {
-                upgrade();
-            }
+    checkUpgrade() {
+        if (this.team === "White" && this.position.getY == 8) {
+            upgrade();
+        } else if (this.team === "Black" && this.position.getY == 1) {
+            upgrade();
         }
+    }
 
         upgrade() {
             new Queen(this.position.getPosition, this.team.getTeam);
         }
 }
 
-var a = new Pawn(new Position("A", 2), new Team("White"));
-
+}
 
 class Tower {
-    onstructor(Position, Team){
+    constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
 }
 
 class Knight {
-    onstructor(Position, Team){
+    constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
 }
 
 class Bishop {
-    onstructor(Position, Team){
+    constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
 }
 
 class Queen {
-    onstructor(Position, Team){
+    constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
 }
 
 class King {
-    onstructor(Position, Team){
+    constructor(Position, Team){
         this.team = Team;
         this.position = Position;
     }
 }
+var a = new Pawn(new Position("A", 2), new Team("White"));
+var b = a.upgrade();
+console.log(a.position.getPos() + a.team.getTeam());
+a.position.setY(3);
+console.log(a.position.getPos() + a.team.getTeam());
+
+/*
+console.log(b.position.pos + b.team.teamGet);
+delete a;
+console.log(b.position.pos + b.team.teamGet);
+*/
