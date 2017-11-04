@@ -1,11 +1,11 @@
 
 
-function position (xpos, ypos) {
+function Position (xpos, ypos) {
     this.xpos = xpos;
     this.ypos = ypos;
 }
 
-position.prototype.getPosition = function() {
+Position.prototype.getPosition = function() {
     return this.xpos+this.ypos;
 };
 
