@@ -6,6 +6,10 @@ class Position {
     get getPosition() {
         return this.xpos+this.ypos;
     }
+    get xPos(){
+        return this.xpos;
+    }
+
 }
 
 class Team {
@@ -25,6 +29,7 @@ class Pawn {
     }
     possiblemoves(){
         var dict = {};
+
         if(this.team === "White"){
             if(this.position)
 
