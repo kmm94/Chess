@@ -30,18 +30,18 @@ class Pawn {
         this.position = Position;
     }
 
-        /*
+
         checkUpgrade() {
-            if (this.team === "White" && this.position.getYPosition == 8) {
-            //    upgrade();
-            } else (this.team === "Black" && this.position.getYPosition == 1) {
-          //      upgrade();
+            if (this.team === "White" && this.position.yGet == 8) {
+                upgrade();
+            } else if (this.team === "Black" && this.position.yGet == 1) {
+                upgrade();
             }
         }
 
         upgrade() {
             new Queen(this.position.getPosition, this.team.getTeam);
-        } */
+        }
 }
 
 var a = new Pawn(new Position("A", 2), new Team("White"));
