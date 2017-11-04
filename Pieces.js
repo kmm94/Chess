@@ -12,9 +12,6 @@ class Position {
     get xGet() {
         return this.xpos;
     }
-    get xPos(){
-        return this.xpos;
-    }
 
 }
 
@@ -22,13 +19,13 @@ class Team {
     constructor(team) {
         this.team = team;
     }
-
+  
     get getTeam() {
         return this.team;
     }
 }
 
-function isVacant(Position) {
+function isVacant(Position) {//checks if the given position has a piece on it
 
 }
 
@@ -36,17 +33,29 @@ class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+
     }
     possiblemoves(){
         var dict = {};
 
         if(this.team === "White"){
-            if(this.position)
+            var oneMoveForward = new Position(this.position.xGet, this.position.yGet+1);
+            if(this.position.yGet = 2){
+                if(isVacant(oneMoveForward)) {
+                    dict.add(oneMoveForward);
+                    if(isVacant(oneMoveForward.ypos+1)){
+                        dict.add(dict.add(oneMoveForward.yGet);
+                    }
+                }
+
+            }
+            if( isVacant(this.position.yGet() +1)){
+                dict.add(new Position(this.position.xGet, ))
+            }
 
         }
 
     }
-
 
         checkUpgrade() {
             if (this.team === "White" && this.position.yGet == 8) {
