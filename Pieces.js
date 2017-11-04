@@ -14,10 +14,22 @@ class Team {
     }
 }
 
+function isVacant(Position) {
+
+}
+
 class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+    }
+    possiblemoves(){
+        var dict = {};
+        if(this.team === "White"){
+            if(this.position)
+
+        }
+
     }
 
 }
