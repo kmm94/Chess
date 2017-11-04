@@ -3,8 +3,14 @@ class Position {
         this.xpos = xpos;
         this.ypos = ypos;
     }
-    get getPosition() {
-        return this.xpos+this.ypos;
+    get pos() {
+        return (this.xpos+this.ypos).toString();
+    }
+    get yGet() {
+        return this.xpos;
+    }
+    get xGet() {
+        return this.xpos;
     }
     get xPos(){
         return this.xpos;
@@ -15,6 +21,10 @@ class Position {
 class Team {
     constructor(team) {
         this.team = team;
+    }
+
+    get getTeam() {
+        return this.team;
     }
 }
 
@@ -37,6 +47,54 @@ class Pawn {
 
     }
 
+
+        checkUpgrade() {
+            if (this.team === "White" && this.position.yGet == 8) {
+                upgrade();
+            } else if (this.team === "Black" && this.position.yGet == 1) {
+                upgrade();
+            }
+        }
+
+        upgrade() {
+            new Queen(this.position.getPosition, this.team.getTeam);
+        }
 }
 
-var a = new Pawn(new Position("a","2"), new Team("White"));
+var a = new Pawn(new Position("A", 2), new Team("White"));
+
+
+class Tower {
+    onstructor(Position, Team){
+        this.team = Team;
+        this.position = Position;
+    }
+}
+
+class Knight {
+    onstructor(Position, Team){
+        this.team = Team;
+        this.position = Position;
+    }
+}
+
+class Bishop {
+    onstructor(Position, Team){
+        this.team = Team;
+        this.position = Position;
+    }
+}
+
+class Queen {
+    onstructor(Position, Team){
+        this.team = Team;
+        this.position = Position;
+    }
+}
+
+class King {
+    onstructor(Position, Team){
+        this.team = Team;
+        this.position = Position;
+    }
+}
