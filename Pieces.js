@@ -357,7 +357,7 @@ class King {
         addToMap(this, Position);
     }
     possiblemoves() {
-        let moves = [];
+        var moves = [];
 
         //up and down
         var pos = new Position(this.position.getX(), this.position.getY() + 1);
@@ -372,11 +372,11 @@ class King {
 
         //Left and right
         pos = new Position(moveXpos(this.position.getX(), true), this.position.getY());
-        if (isVacant(pos) === null && map[pos.getPos()])) {
+        if (isVacant(pos) === null && map[pos.getPos()]) {
             moves.push(pos);
         }
         pos = new Position(moveXpos(this.position.getX(), false), this.position.getY());
-        if (isVacant(pos) === null && map[pos.getPos()])) {
+        if (isVacant(pos) === null && map[pos.getPos()]) {
             moves.push(pos);
         }
 
@@ -429,7 +429,6 @@ class Space {
     constructor(Position) {
         this.position = Position;
         this.piece = null;
-        this.threatenedBy = [];
         this.threatnedByBlack = false;
         this.threatnedByWhite = false;
     }
@@ -440,6 +439,14 @@ class Space {
 
     getPiece() {
         return this.piece;
+    }
+
+    getBlackThreat(){
+        return this.threatnedByBlack;
+    }
+
+    getWhiteThreat(){
+        return this.threatnedByWhite;
     }
 
     setBlackThreat(threat) {
