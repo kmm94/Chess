@@ -39,7 +39,7 @@ class Team {
     }
 }
 
-function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
+function isVacant(Position) {//checks if the given position has a piece on it returns true if there isn't a piece
     return true;
 }
 function moveXpos(xPos, toTheRight) {
@@ -111,11 +111,22 @@ class Pawn {
                 dict.add(new Position(this.position.xGet, oneMoveForward))
             }
             //Attack move
-            if(!isVacant(new Position(this.position.xGet, oneMoveForward))){
+            var toRight = moveXpos(this.position.xGet, true);
+            var toLeft =  moveXpos(this.position.xGet, false);
 
+            if(toRight !== null) {
+                if(!isVacant(new Position(toRight, oneMoveForward))){
+                    dict.add(new Position(toRight, oneMoveForward));
+                }
+            }
+            if(toLeft !== null) {
+                if(!isVacant(new Position(toLeft, oneMoveForward))){
+                    dict.add(new Position(toLeft, oneMoveForward));
+                }
             }
         }
     }
+
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team.getTeam()));
     }
@@ -133,7 +144,7 @@ class Pawn {
         }
 }
 
-}
+
 
 class Tower {
     constructor(Position, Team){
