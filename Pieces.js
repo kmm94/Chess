@@ -40,7 +40,7 @@ class Team {
 }
 
 function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
-
+    return true;
 }
 
 class Pawn {
@@ -58,19 +58,19 @@ class Pawn {
                 if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
                     dict.add(new Position(this.position.xGet, oneMoveForward));
                     if(isVacant(new Position(this.position.xGet, oneMoveForward + 1))){
-                        dict.add(dict.add(new Position(this.position.xGet, oneMoveForward + 1));
+                        dict.add(dict.add(new Position(this.position.xGet, oneMoveForward + 1)));
                     }
                 }
             } else
             //One move forward
-            if(isVacant(new Position(this.position.xGet, oneMoveForward))){
+            if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
                 dict.add(new Position(this.position.xGet, oneMoveForward))
             }
             //Attack move
-            if(!isVacant(new Position(this.position.xGet, oneMoveForward)){
+            if(!isVacant(new Position(this.position.xGet, oneMoveForward))){
 
+            }
         }
-
     }
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team.getTeam()));
@@ -83,13 +83,8 @@ class Pawn {
             this.upgrade();
         }
     }
-
-        upgrade() {
-            new Queen(this.position.getPosition, this.team.getTeam);
-        }
 }
 
-}
 
 class Tower {
     constructor(Position, Team){
@@ -124,4 +119,10 @@ class King {
         this.team = Team;
         this.position = Position;
     }
+}
+
+var a = "A";
+a;
+if (a.ignoreCase == "a") {
+    console.log("YAY");
 }
