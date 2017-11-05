@@ -1,5 +1,5 @@
 var map = {};
-
+var livingPieces = [];
 
 function populateMap() {
     var xPos = "A";
@@ -24,31 +24,25 @@ class Position {
         this.xpos = xpos;
         this.ypos = ypos;
     }
-
     getPos() {
         return this.xpos+this.ypos;
     }
-
     getY() {
         return this.ypos;
     }
     getX() {
         return this.xpos;
     }
-
     setY(ypos) {
         this.ypos = ypos;
     }
-
     setX(xpos) {
         this.xpos = xpos;
     }
-
     setPos(Position) {
         this.xpos = Position.getX();
         this.ypos = Position.getY();
     }
-
     isEquals(Position) {
         if(this.xpos === Position.xpos && this.ypos == Position.ypos) {
             return true;
@@ -62,7 +56,6 @@ class Team {
     constructor(team) {
         this.team = team;
     }
-
     getTeam() {
         return this.team;
     }
@@ -85,6 +78,7 @@ function movePiece(Piece, Position) {
 }
 
 function addToMap(Piece, Position) {
+    livingPieces.push(Piece);
     var Space = map[Position.getPos()];
     return Space.setPiece(Piece);
 }
@@ -143,7 +137,7 @@ function moveXpos(xPos, toTheRight) {
     return true;
 }
 
-class Pawn {
+ class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
@@ -237,7 +231,7 @@ class Pawn {
 function movesLeftRight(dict, piece, toTheRight){
     var xPos = piece.position.getX();
     var yPos = piece.position.getY();
-    while(True){
+    while(true){
         xPos = moveXpos(xPos, toTheRight);
         if (xPos != null){
             break;
@@ -345,7 +339,6 @@ class Bishop {
         crossmoves(dict, this, -1, true);
         //left down
         crossmoves(dict, this, -1, false);
-        console.log(dict.length);
         return dict;
     }
 }
@@ -368,10 +361,36 @@ class King {
     }
 }
 
+function calcThreat() {
+    var keys = Object.keys(map);
+    for(var i = 0; i < keys.length;i++){
+        var space = map[keys[i]];
+        space.setWhiteThreat(false);
+        space.setBlackThreat(false);
+    }
+    for (i = 0; i < livingPieces.length; i++) {
+        var piece = livingPieces[i];
+        var team = piece.team;
+        var threasts = piece.possiblemoves();
+        for (k = 0; k < threasts.length; k++) {
+            var Position = threasts[k];
+            var Space = map[Position.getPos()];
+            if(team==="Black") {
+                Space.setBlackThreat(true);
+            } else if (team==="White") {
+                Space.setWhiteThreat(true);
+            }
+        }
+    }
+}
+
 class Space {
     constructor(Position) {
         this.position = Position;
         this.piece = null;
+        this.threatenedBy = [];
+        this.threatnedByBlack = false;
+        this.threatnedByWhite = false;
     }
 
     getPosition() {
@@ -382,13 +401,23 @@ class Space {
         return this.piece;
     }
 
+    setBlackThreat(threat) {
+        this.threatnedByBlack = threat;
+    }
+
+    setWhiteThreat(threat) {
+        this.threatnedByWhite = threat;
+    }
+
     setPiece(piece) {
         if (this.piece != null) {
             var a = this.piece;
             if (this.getPiece().team != piece.team) {
-                //this.piece.kill();
+                var index = array.indexOf(this.piece);
+                livingPieces.splice(index, 1);
                 this.piece = piece;
                 piece.setPos(this.position);
+                calcThreat();
                 return true;
             } else {
                 return false;
@@ -396,6 +425,7 @@ class Space {
         }
         this.piece = piece;
         piece.setPos(this.position);
+        calcThreat();
         return true;
     }
 }
