@@ -136,7 +136,7 @@ function moveXpos(xPos, toTheRight) {
     return true;
 }
 
-class Pawn {
+ class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
