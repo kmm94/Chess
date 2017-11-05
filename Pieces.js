@@ -1,13 +1,14 @@
 var map = {};
 
+
 function populateMap() {
     var xPos = "A";
     var notDone = true;
     var toTheRight = true;
+
     while(notDone) {
-        for (i = 0; i <= 8; i++) {
-            var pos = new Position(xPos, i);
-            map[pos] = new Space(pos);
+        for (i = 1; i <= 8; i++) {
+            map[xPos+i] = new Space(new Position(xPos, i));
         }
         xPos = moveXpos(xPos, toTheRight);
         if(xPos == null) {
@@ -63,12 +64,12 @@ class Team {
  * Returns true if the move was succesful. Returns false if the move wasn't made.
  */
 function movePiece(Piece, Position) {
-    var Space = map[Position];
+    var Space = map[Position.getPos()];
     return Space.setPiece(Piece);
 }
 
 function addToMap(Piece, Position) {
-    var Space = map[Position];
+    var Space = map[Position.getPos()];
     return Space.setPiece(Piece);
 }
 
@@ -76,7 +77,7 @@ function isVacant(Position) {//checks if the given position has a piece on it re
     var x = Position.getX();
     var y = Position.getY();
 
-    var Space = map[Position];
+    var Space = map[Position.getPos()];
     if (Space.getPiece() == null) {
         return null;
     } else {
@@ -133,6 +134,7 @@ class Pawn {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+        addToMap(this, Position);
     }
     possiblemoves(){
         var dict = {};
@@ -158,6 +160,11 @@ class Pawn {
             }
         }
     }
+
+    setPos(Position) {
+        this.position = Position;
+    }
+
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team.getTeam()));
     }
@@ -219,6 +226,10 @@ class Bishop {
         this.position = Position;
     }
 
+    setPos(Position) {
+        this.position = Position;
+    }
+
     possiblemoves(){
         var dict = {};
         var xPos = this.position.getX();
@@ -266,21 +277,19 @@ class Space {
         if (this.piece != null) {
             var a = this.piece;
             console.log(a);
-            if (this.getPiece().team.getTeam() != piece.team.getTeam) {
-                this.piece.kill();
+            if (this.getPiece().team.getTeam != piece.team.getTeam) {
+                //this.piece.kill();
                 this.piece = piece;
+                piece.setPos(this.position);
                 return true;
             } else {
                 return false;
             }
         }
         this.piece = piece;
+        piece.setPos(this.position);
         return true;
     }
 }
 
-populateMap();
-var bishPos = new Position("C", 3);
-var bish = new Bishop(bishPos, "White");
-console.log(isVacant(Position));
 
