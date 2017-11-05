@@ -179,12 +179,61 @@ class Pawn {
         }
 }
 
+function movesLeftRight(dict, piece, toTheRight){
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getY();
+    while(True){
+        xPos = moveXpos(xPos, toTheRight);
+        if (xPos != null){
+            break;
+        }
+        var newPos = new Position(xPos, yPos);
+        if (isVacant(newPos) == null){
+            dict.add(newPos);
+        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
+            dict.add(newPos);
+            break;
+        }
+    }
+}
 
+function movesUpDown(dict, piece, direction){
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getY();
+    while (True){
+        yPos = yPos + direction;
+        if (yPos > 8 || yPos < 1){
+            break;
+        }
+        var newPos = new Position(xPos, yPos);
+        if (isVacant(newPos) == null){
+            dict.add(newPos);
+        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
+            dict.add(newPos);
+            break;
+        }
+    }
+}
 
-class Tower {
+class Rook {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+        addToMap(this, Position);
+    }
+
+    possiblemoves(){
+        var dict = {};
+        var xPos = this.position.getX();
+        var yPos = this.position.getY();
+        // Right
+        movesLeftRight(dict, this, true);
+         // Left
+        movesLeftRight(dict,this, false);
+        // Up
+        movesUpDown(dict, this, 1);
+        // Down
+        movesUpDown(dict, this, -1);
     }
 }
 
