@@ -74,10 +74,7 @@ function addToMap(Piece, Position) {
 }
 
 function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
-    var x = Position.getX();
-    var y = Position.getY();
-
-    var Space = map[Position.getPos()];
+    Space = map[Position.getPos()];
     if (Space.getPiece() == null) {
         return null;
     } else {
@@ -166,7 +163,7 @@ class Pawn {
     }
 
     upgrade() {
-        return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team.getTeam()));
+        return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team));
     }
 
     checkUpgrade() {
@@ -175,10 +172,6 @@ class Pawn {
         } else if (this.team === "Black" && this.position.getY == 1) {
             this.upgrade();
         }
-    }
-
-    upgrade() {
-            new Queen(this.position.getPosition, this.team.getTeam);
     }
 }
 
@@ -211,7 +204,7 @@ function crossmoves(dict,piece, direction, toTheRight) {
         var pos = new Position(xPos, yPos);
         if (isVacant(pos) == null) {
             dict.add(pos);
-        } else if (isVacant(pos).getTeam() =! piece.getTeam()) {
+        } else if (isVacant(pos).team != piece.team) {
             dict.add(pos);
             break;
         }
@@ -276,8 +269,7 @@ class Space {
     setPiece(piece) {
         if (this.piece != null) {
             var a = this.piece;
-            console.log(a);
-            if (this.getPiece().team.getTeam != piece.team.getTeam) {
+            if (this.getPiece().team != piece.team) {
                 //this.piece.kill();
                 this.piece = piece;
                 piece.setPos(this.position);
@@ -292,4 +284,13 @@ class Space {
     }
 }
 
-
+populateMap();
+var bishPos = new Position("C", 1);
+var bish = new Bishop(bishPos, "White");
+console.log(isVacant(bishPos));
+var enemyPos = new Position("A", 3);
+var enemyPawn = new Pawn(enemyPos, "White");
+console.log(isVacant(enemyPos));
+console.log("Moving Bishop");
+movePiece(bish, enemyPos);
+console.log(bish);
