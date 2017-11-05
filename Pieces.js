@@ -70,10 +70,10 @@ class Team {
 
 /**
  * Returns true if the move was succesful. Returns false if the move wasn't made.
+ * should TODO send the move to server!
  */
 function movePiece(Piece, Position) {
     var moves = Piece.possiblemoves();
-    console.log(moves);
     for (i = 0; i <= moves.length; i++) {
         var pos = moves[i];
         if (pos.isEquals(Position)) {
@@ -150,65 +150,66 @@ class Pawn {
         addToMap(this, Position);
     }
     possiblemoves(){
-        var dictPossibleMoves = {};
+        var dictPossibleMoves = [];
 
         if(this.team === "White"){
             // White pawn
-            let oneMoveForward = this.position.getY + 1;
+            var ypos= this.position.getY();
+            var oneMoveForward = ypos + 1;
             //first move
-            if(this.position.getY = 2){
-                if(isVacant(new Position(this.position.getX, oneMoveForward))===null) {
-                    dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward));
-                    if(isVacant(new Position(this.position.getX, oneMoveForward + 1)===null)){
-                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward + 1)));
+            if(this.position.getY() == 2){
+                if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
+                    dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward));
+                    if(isVacant(new Position(this.position.getX(), oneMoveForward + 1))=== null){
+                        dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward + 1));
                     }
                 }
             } else
             //One move forward
-            if(isVacant(new Position(this.position.getX, oneMoveForward))===null) {
-                dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward))
+            if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
+                dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward))
             }
             //Attack move
-            let toRight = moveXpos(this.position.getX, true);
-            let toLeft =  moveXpos(this.position.getX, false);
+            let toRight = moveXpos(this.position.getX(), true);
+            let toLeft =  moveXpos(this.position.getX(), false);
             if(toRight !== null) {
-                if(isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
-                    dictPossibleMoves.add(new Position(toRight, oneMoveForward));
+                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
+                    dictPossibleMoves.push(new Position(toRight, oneMoveForward));
                 }
             }
             if(toLeft !== null) {
-                if(isVacant(new Position(toLeft, oneMoveForward).team === "Black")){
-                    dictPossibleMoves.add(new Position(toLeft, oneMoveForward));
+                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
+                    dictPossibleMoves.push(new Position(toLeft, oneMoveForward));
                 }
             }
             return dictPossibleMoves
         } else {
             // Black pawn
-            let oneMoveForward = this.position.getY - 1;
+            let oneMoveForward = this.position.getY() - 1;
             //first move
-            if(this.position.getY = 2){
-                if(isVacant(new Position(this.position.getX, oneMoveForward))) {
-                    dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward));
-                    if(isVacant(new Position(this.position.getX, oneMoveForward + 1))){
-                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward + 1)));
+            if(this.position.getY() == 2){
+                if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
+                    dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward));
+                    if(isVacant(new Position(this.position.getX(), oneMoveForward + 1))===null){
+                        dictPossibleMoves.push(dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward + 1)));
                     }
                 }
             } else
             //One move forward
-            if(isVacant(new Position(this.position.getX, oneMoveForward))) {
-                dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward))
+            if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
+                dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward))
             }
             //Attack move
-            let toRight = moveXpos(this.position.getX, true);
-            let toLeft =  moveXpos(this.position.getX, false);
+            let toRight = moveXpos(this.position.getX(), true);
+            let toLeft =  moveXpos(this.position.getX(), false);
             if(toRight !== null) {
-                if(isVacant(new Position(toRight, oneMoveForward)).team === "White"){
-                    dictPossibleMoves.add(new Position(toRight, oneMoveForward));
+                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "White"){
+                    dictPossibleMoves.push(new Position(toRight, oneMoveForward));
                 }
             }
             if(toLeft !== null) {
-                if(isVacant(new Position(toLeft, oneMoveForward)).team === "White"){
-                    dictPossibleMoves.add(new Position(toLeft, oneMoveForward));
+                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "White"){
+                    dictPossibleMoves.push(new Position(toLeft, oneMoveForward));
                 }
             }
         }
@@ -243,9 +244,9 @@ function movesLeftRight(dict, piece, toTheRight){
         }
         var newPos = new Position(xPos, yPos);
         if (isVacant(newPos) == null){
-            dict.add(newPos);
+            dict.push(newPos);
         } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
-            dict.add(newPos);
+            dict.push(newPos);
             break;
         }
     }
@@ -261,9 +262,9 @@ function movesUpDown(dict, piece, direction){
         }
         var newPos = new Position(xPos, yPos);
         if (isVacant(newPos) == null){
-            dict.add(newPos);
+            dict.push(newPos);
         } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
-            dict.add(newPos);
+            dict.push(newPos);
             break;
         }
     }
@@ -402,10 +403,20 @@ class Space {
 populateMap();
 var bishPos = new Position("C", 1);
 var bish = new Bishop(bishPos, "White");
-console.log(isVacant(bishPos));
+// console.log(isVacant(bishPos));
 var enemyPos = new Position("B", 2);
-//var enemyPawn = new Pawn(enemyPos, "Black");
-console.log(isVacant(enemyPos));
-console.log("Moving Bishop");
+var enemyPawn = new Pawn(enemyPos, "Black");
+var friendlyPawnPos = new Position("A",1);
+var friendlyPawn = new Pawn(friendlyPawnPos, "White");
+// console.log(friendlyPawn.possiblemoves());
+// console.log(isVacant(enemyPos));
+// console.log("Moving Bishop");
 movePiece(bish, enemyPos);
-console.log(bish);
+// console.log(bish);
+console.log(friendlyPawn.possiblemoves());
+movePiece(friendlyPawn,friendlyPawn.possiblemoves()[0]);
+// console.log(isVacant(new Position("A",2)));
+console.log(friendlyPawn.possiblemoves());
+movePiece(friendlyPawn,friendlyPawn.possiblemoves()[1]);
+console.log(isVacant(new Position("A", 4)));
+console.log(friendlyPawn.possiblemoves())
