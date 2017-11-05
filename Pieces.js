@@ -97,23 +97,23 @@ class Pawn {
 
         if(this.team === "White"){
             // White pawn
-            let oneMoveForward = this.position.yGet + 1;
+            let oneMoveForward = this.position.getY + 1;
             //first move
-            if(this.position.yGet = 2){
-                if(isVacant(new Position(this.position.xGet, oneMoveForward))===null) {
-                    dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward));
-                    if(isVacant(new Position(this.position.xGet, oneMoveForward + 1)===null)){
-                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward + 1)));
+            if(this.position.getY = 2){
+                if(isVacant(new Position(this.position.getX, oneMoveForward))===null) {
+                    dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward));
+                    if(isVacant(new Position(this.position.getX, oneMoveForward + 1)===null)){
+                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward + 1)));
                     }
                 }
             } else
             //One move forward
-            if(isVacant(new Position(this.position.xGet, oneMoveForward))===null) {
-                dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward))
+            if(isVacant(new Position(this.position.getX, oneMoveForward))===null) {
+                dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward))
             }
             //Attack move
-            let toRight = moveXpos(this.position.xGet, true);
-            let toLeft =  moveXpos(this.position.xGet, false);
+            let toRight = moveXpos(this.position.getX, true);
+            let toLeft =  moveXpos(this.position.getX, false);
             if(toRight !== null) {
                 if(isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
                     dictPossibleMoves.add(new Position(toRight, oneMoveForward));
@@ -131,23 +131,23 @@ class Pawn {
 
             // Black pawn
 
-            let oneMoveForward = this.position.yGet - 1;
+            let oneMoveForward = this.position.getY - 1;
             //first move
-            if(this.position.yGet = 2){
-                if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
-                    dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward));
-                    if(isVacant(new Position(this.position.xGet, oneMoveForward + 1))){
-                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward + 1)));
+            if(this.position.getY = 2){
+                if(isVacant(new Position(this.position.getX, oneMoveForward))) {
+                    dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward));
+                    if(isVacant(new Position(this.position.getX, oneMoveForward + 1))){
+                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward + 1)));
                     }
                 }
             } else
             //One move forward
-            if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
-                dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward))
+            if(isVacant(new Position(this.position.getX, oneMoveForward))) {
+                dictPossibleMoves.add(new Position(this.position.getX, oneMoveForward))
             }
             //Attack move
-            let toRight = moveXpos(this.position.xGet, true);
-            let toLeft =  moveXpos(this.position.xGet, false);
+            let toRight = moveXpos(this.position.getX, true);
+            let toLeft =  moveXpos(this.position.getX, false);
             if(toRight !== null) {
                 if(isVacant(new Position(toRight, oneMoveForward)).team === "White"){
                     dictPossibleMoves.add(new Position(toRight, oneMoveForward));
