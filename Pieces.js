@@ -111,8 +111,8 @@ class Pawn {
                 dict.add(new Position(this.position.xGet, oneMoveForward))
             }
             //Attack move
-            let toRight = moveXpos(this.position.xGet, true);
-            let toLeft =  moveXpos(this.position.xGet, false);
+            var toRight = moveXpos(this.position.xGet, true);
+            var toLeft =  moveXpos(this.position.xGet, false);
 
             if(toRight !== null) {
                 if(!isVacant(new Position(toRight, oneMoveForward))){
