@@ -357,36 +357,45 @@ class King {
         addToMap(this, Position);
     }
     possiblemoves() {
-        let moves = {};
+        let moves = [];
 
         //up and down
-        if (isVacant(new Position(this.position.xGet, this.position.yGet + 1)) === null) {
-            moves.add(new Position(this.position.xGet, this.position.yGet + 1));
+        var pos = new Position(this.position.getX(), this.position.getY() + 1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
-        if (isVacant(new Position(this.position.xGet, this.position.yGet - 1)) === null) {
-            moves.add(new Position(this.position.xGet, this.position.yGet - 1));
+
+        pos =  new Position(this.position.getX(), this.position.getY() - 1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
 
         //Left and right
-        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet) === null)) {
-            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet));
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY());
+        if (isVacant(pos) === null && map[pos.getPos()])) {
+            moves.push(pos);
         }
-        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet) === null)) {
-            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet));
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY());
+        if (isVacant(pos) === null && map[pos.getPos()])) {
+            moves.push(pos);
         }
 
         //diagonal
-        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet -1)) === null) {
-            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet -1));
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() -1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
-        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet -1)) === null) {
-            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet -1));
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() -1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
-        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet +1)) === null) {
-            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet +1));
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() +1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
-        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet +1)) === null) {
-            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet +1));
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() +1);
+        if (isVacant(pos) === null && map[pos.getPos()]) {
+            moves.push(pos);
         }
 
         return moves;
