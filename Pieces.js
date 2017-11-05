@@ -134,33 +134,79 @@ class Pawn {
         addToMap(this, Position);
     }
     possiblemoves(){
-        var dict = {};
+        var dictPossibleMoves = {};
 
         if(this.team === "White"){
-            var oneMoveForward = this.position.yGet + 1;
+            // White pawn
+            let oneMoveForward = this.position.yGet + 1;
+            //first move
+            if(this.position.yGet = 2){
+                if(isVacant(new Position(this.position.xGet, oneMoveForward))===null) {
+                    dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward));
+                    if(isVacant(new Position(this.position.xGet, oneMoveForward + 1)===null)){
+                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward + 1)));
+                    }
+                }
+            } else
+            //One move forward
+            if(isVacant(new Position(this.position.xGet, oneMoveForward))===null) {
+                dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward))
+            }
+            //Attack move
+            let toRight = moveXpos(this.position.xGet, true);
+            let toLeft =  moveXpos(this.position.xGet, false);
+            if(toRight !== null) {
+                if(isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
+                    dictPossibleMoves.add(new Position(toRight, oneMoveForward));
+                }
+            }
+            if(toLeft !== null) {
+                if(isVacant(new Position(toLeft, oneMoveForward).team === "Black")){
+                    dictPossibleMoves.add(new Position(toLeft, oneMoveForward));
+                }
+            }
+
+            return dictPossibleMoves
+
+        } else {
+
+            // Black pawn
+
+            let oneMoveForward = this.position.yGet - 1;
             //first move
             if(this.position.yGet = 2){
                 if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
-                    dict.add(new Position(this.position.xGet, oneMoveForward));
+                    dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward));
                     if(isVacant(new Position(this.position.xGet, oneMoveForward + 1))){
-                        dict.add(dict.add(new Position(this.position.xGet, oneMoveForward + 1)));
+                        dictPossibleMoves.add(dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward + 1)));
                     }
                 }
             } else
             //One move forward
             if(isVacant(new Position(this.position.xGet, oneMoveForward))) {
-                dict.add(new Position(this.position.xGet, oneMoveForward))
+                dictPossibleMoves.add(new Position(this.position.xGet, oneMoveForward))
             }
             //Attack move
-            if(!isVacant(new Position(this.position.xGet, oneMoveForward))){
-
+            let toRight = moveXpos(this.position.xGet, true);
+            let toLeft =  moveXpos(this.position.xGet, false);
+            if(toRight !== null) {
+                if(isVacant(new Position(toRight, oneMoveForward)).team === "White"){
+                    dictPossibleMoves.add(new Position(toRight, oneMoveForward));
+                }
+            }
+            if(toLeft !== null) {
+                if(isVacant(new Position(toLeft, oneMoveForward)).team === "White"){
+                    dictPossibleMoves.add(new Position(toLeft, oneMoveForward));
+                }
             }
         }
+        return dictPossibleMoves;
     }
 
     setPos(Position) {
         this.position = Position;
     }
+
 
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team));
@@ -175,10 +221,61 @@ class Pawn {
     }
 }
 
-class Tower {
+function movesLeftRight(dict, piece, toTheRight){
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getY();
+    while(True){
+        xPos = moveXpos(xPos, toTheRight);
+        if (xPos != null){
+            break;
+        }
+        var newPos = new Position(xPos, yPos);
+        if (isVacant(newPos) == null){
+            dict.add(newPos);
+        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
+            dict.add(newPos);
+            break;
+        }
+    }
+}
+
+function movesUpDown(dict, piece, direction){
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getY();
+    while (True){
+        yPos = yPos + direction;
+        if (yPos > 8 || yPos < 1){
+            break;
+        }
+        var newPos = new Position(xPos, yPos);
+        if (isVacant(newPos) == null){
+            dict.add(newPos);
+        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
+            dict.add(newPos);
+            break;
+        }
+    }
+}
+
+class Rook {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+        addToMap(this, Position);
+    }
+
+    possiblemoves(){
+        var dict = {};
+        var xPos = this.position.getX();
+        var yPos = this.position.getY();
+        // Right
+        movesLeftRight(dict, this, true);
+         // Left
+        movesLeftRight(dict,this, false);
+        // Up
+        movesUpDown(dict, this, 1);
+        // Down
+        movesUpDown(dict, this, -1);
     }
 }
 
@@ -249,6 +346,10 @@ class King {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+    }
+    possiblemoves() {
+        var dict = {};
+
     }
 }
 
