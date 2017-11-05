@@ -1,3 +1,23 @@
+var map = {};
+
+function populateMap() {
+    var xPos = "A";
+    var notDone = true;
+    var toTheRight = true;
+    while(notDone) {
+        for (i = 0; i <= 8; i++) {
+            var pos = new Position(xPos, i);
+            map[pos] = new Space(pos);
+        }
+        xPos = moveXpos(xPos, toTheRight);
+        if(xPos == null) {
+            notDone = false;
+            break;
+        }
+    }
+}
+
+
 class Position {
     constructor(xpos, ypos) {
         this.xpos = xpos;
@@ -39,7 +59,29 @@ class Team {
     }
 }
 
-function isVacant(Position) {//checks if the given position has a piece on it returns true if there is a piece
+/**
+ * Returns true if the move was succesful. Returns false if the move wasn't made.
+ */
+function movePiece(Piece, Position) {
+    var Space = map[Position];
+    return Space.setPiece(Piece);
+}
+
+function addToMap(Piece, Position) {
+    var Space = map[Position];
+    return Space.setPiece(Piece);
+}
+
+function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
+    var x = Position.getX();
+    var y = Position.getY();
+
+    var Space = map[Position];
+    if (Space.getPiece() == null) {
+        return null;
+    } else {
+        return Space.getPiece();
+    }
     return true;
 }
 function moveXpos(xPos, toTheRight) {
@@ -128,11 +170,9 @@ class Pawn {
         }
     }
 
-        upgrade() {
+    upgrade() {
             new Queen(this.position.getPosition, this.team.getTeam);
-        }
-}
-
+    }
 }
 
 class Tower {
@@ -149,10 +189,48 @@ class Knight {
     }
 }
 
+function crossmoves(dict,piece, direction, toTheRight) {
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getX();
+    while (true) {
+        xPos = moveXpos(xPos, toTheRight);
+        if (xPos != null) {
+            break;
+        }
+        yPos = yPos + direction;
+        if (yPos > 8 || yPos < 1) {
+            break;
+        }
+        var pos = new Position(xPos, yPos);
+        if (isVacant(pos) == null) {
+            dict.add(pos);
+        } else if (isVacant(pos).getTeam() =! piece.getTeam()) {
+            dict.add(pos);
+            break;
+        }
+    }
+    return dict;
+}
+
 class Bishop {
     constructor(Position, Team){
         this.team = Team;
+        addToMap(this, Position);
         this.position = Position;
+    }
+
+    possiblemoves(){
+        var dict = {};
+        var xPos = this.position.getX();
+        var yPos = this.position.getX();
+        //right up
+        crossmoves(dict, this, 1, true);
+        //left up
+        crossmoves(dict, this, 1, false);
+        //right down
+        crossmoves(dict, this, -1, true);
+        //left down
+        crossmoves(dict, this, -1, false);
     }
 }
 
@@ -169,3 +247,40 @@ class King {
         this.position = Position;
     }
 }
+
+class Space {
+    constructor(Position) {
+        this.position = Position;
+        this.piece = null;
+    }
+
+    getPosition() {
+        return this.position;
+    }
+
+    getPiece() {
+        return this.piece;
+    }
+
+    setPiece(piece) {
+        if (this.piece != null) {
+            var a = this.piece;
+            console.log(a);
+            if (this.getPiece().team.getTeam() != piece.team.getTeam) {
+                this.piece.kill();
+                this.piece = piece;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        this.piece = piece;
+        return true;
+    }
+}
+
+populateMap();
+var bishPos = new Position("C", 3);
+var bish = new Bishop(bishPos, "White");
+console.log(isVacant(Position));
+
