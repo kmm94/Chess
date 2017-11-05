@@ -354,10 +354,43 @@ class King {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+        addToMap(this, Position);
     }
-    possiblemoves() {
-        var dict = {};
 
+    possiblemoves() {
+        let moves = {};
+
+        //up and down
+        if (isVacant(new Position(this.position.xGet, this.position.yGet + 1)) === null) {
+            moves.add(new Position(this.position.xGet, this.position.yGet + 1));
+        }
+        if (isVacant(new Position(this.position.xGet, this.position.yGet - 1)) === null) {
+            moves.add(new Position(this.position.xGet, this.position.yGet - 1));
+        }
+
+        //Left and right
+        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet) === null)) {
+            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet));
+        }
+        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet) === null)) {
+            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet));
+        }
+
+        //diagonal
+        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet -1)) === null) {
+            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet -1));
+        }
+        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet -1)) === null) {
+            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet -1));
+        }
+        if (isVacant(new Position(moveXpos(this.position.xGet, false), this.position.yGet +1)) === null) {
+            moves.add(new Position(moveXpos(this.position.xGet, false), this.position.yGet +1));
+        }
+        if (isVacant(new Position(moveXpos(this.position.xGet, true), this.position.yGet +1)) === null) {
+            moves.add(new Position(moveXpos(this.position.xGet, true), this.position.yGet +1));
+        }
+
+        return moves;
     }
 }
 
