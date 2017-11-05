@@ -413,7 +413,7 @@ class Space {
         if (this.piece != null) {
             var a = this.piece;
             if (this.getPiece().team != piece.team) {
-                var index = array.indexOf(this.piece);
+                var index = livingPieces.indexOf(this.piece);
                 livingPieces.splice(index, 1);
                 this.piece = piece;
                 piece.setPos(this.position);
