@@ -48,6 +48,14 @@ class Position {
         this.xpos = Position.getX();
         this.ypos = Position.getY();
     }
+
+    isEquals(Position) {
+        if(this.xpos === Position.xpos && this.ypos == Position.ypos) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 class Team {
@@ -64,8 +72,16 @@ class Team {
  * Returns true if the move was succesful. Returns false if the move wasn't made.
  */
 function movePiece(Piece, Position) {
-    var Space = map[Position.getPos()];
-    return Space.setPiece(Piece);
+    var moves = Piece.possiblemoves();
+    console.log(moves);
+    for (i = 0; i <= moves.length; i++) {
+        var pos = moves[i];
+        if (pos.isEquals(Position)) {
+            var Space = map[Position.getPos()];
+            return Space.setPiece(Piece);
+        }
+    }
+    return null;
 }
 
 function addToMap(Piece, Position) {
@@ -165,13 +181,9 @@ class Pawn {
                     dictPossibleMoves.add(new Position(toLeft, oneMoveForward));
                 }
             }
-
             return dictPossibleMoves
-
         } else {
-
             // Black pawn
-
             let oneMoveForward = this.position.getY - 1;
             //first move
             if(this.position.getY = 2){
@@ -288,10 +300,10 @@ class Knight {
 
 function crossmoves(dict,piece, direction, toTheRight) {
     var xPos = piece.position.getX();
-    var yPos = piece.position.getX();
+    var yPos = piece.position.getY();
     while (true) {
         xPos = moveXpos(xPos, toTheRight);
-        if (xPos != null) {
+        if (xPos == null) {
             break;
         }
         yPos = yPos + direction;
@@ -300,9 +312,9 @@ function crossmoves(dict,piece, direction, toTheRight) {
         }
         var pos = new Position(xPos, yPos);
         if (isVacant(pos) == null) {
-            dict.add(pos);
+            dict.push(pos);
         } else if (isVacant(pos).team != piece.team) {
-            dict.add(pos);
+            dict.push(pos);
             break;
         }
     }
@@ -321,7 +333,7 @@ class Bishop {
     }
 
     possiblemoves(){
-        var dict = {};
+        var dict = [];
         var xPos = this.position.getX();
         var yPos = this.position.getX();
         //right up
@@ -332,6 +344,8 @@ class Bishop {
         crossmoves(dict, this, -1, true);
         //left down
         crossmoves(dict, this, -1, false);
+        console.log(dict.length);
+        return dict;
     }
 }
 
@@ -389,8 +403,8 @@ populateMap();
 var bishPos = new Position("C", 1);
 var bish = new Bishop(bishPos, "White");
 console.log(isVacant(bishPos));
-var enemyPos = new Position("A", 3);
-var enemyPawn = new Pawn(enemyPos, "White");
+var enemyPos = new Position("B", 2);
+//var enemyPawn = new Pawn(enemyPos, "Black");
 console.log(isVacant(enemyPos));
 console.log("Moving Bishop");
 movePiece(bish, enemyPos);
