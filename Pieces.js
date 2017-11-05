@@ -489,12 +489,10 @@ var friendlyPawn = new Pawn(friendlyPawnPos, "White");
 // console.log(friendlyPawn.possiblemoves());
 // console.log(isVacant(enemyPos));
 // console.log("Moving Bishop");
-movePiece(bish, enemyPos);
+// movePiece(bish, enemyPos);
 // console.log(bish);
-console.log(friendlyPawn.possiblemoves());
-movePiece(friendlyPawn,friendlyPawn.possiblemoves()[0]);
+// movePiece(friendlyPawn,friendlyPawn.possiblemoves()[0]);
 // console.log(isVacant(new Position("A",2)));
-console.log(friendlyPawn.possiblemoves());
-movePiece(friendlyPawn,friendlyPawn.possiblemoves()[1]);
-console.log(isVacant(new Position("A", 4)));
-console.log(friendlyPawn.possiblemoves())
+// movePiece(friendlyPawn,friendlyPawn.possiblemoves()[1]);
+console.log(isVacant(new Position("B", 1)));
+var WKing = new King(new Position("B",1), "White");
