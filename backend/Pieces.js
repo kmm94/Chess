@@ -18,12 +18,12 @@ function populateMap() {
     }
 }
 
-
 class Position {
     constructor(xpos, ypos) {
         this.xpos = xpos;
         this.ypos = ypos;
     }
+
     getPos() {
         return this.xpos + this.ypos;
     }
@@ -56,6 +56,7 @@ class Team {
     constructor(team) {
         this.team = team;
     }
+
     getTeam() {
         return this.team;
     }
@@ -84,11 +85,11 @@ function addToMap(Piece, Position) {
 }
 
 function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
-    Space = map[Position.getPos()];
-    if (Space.getPiece() == null) {
+    space = map[Position.getPos()];
+    if (space.getPiece() === null) {
         return null;
     } else {
-        return Space.getPiece();
+        return space.getPiece();
     }
     return true;
 }
@@ -415,15 +416,47 @@ class Queen {
 class King {
     constructor(Position, Team){
         this.team = Team;
+        addToMap(this, Position);
         this.position = Position;
     }
-    possiblemoves() {
-        var dict = {};
 
+    setPos(Position) {
+        this.position = Position;
     }
 
-    getStringPos(){
-        return this.position.getPos();
+    isKingMovePosibble(pos, moves) {
+        if (map[pos.getPos()] !== undefined && (isVacant(pos) === null || isVacant(pos).team !== this.team)) {
+            if ((this.team === "White" && !map[pos.getPos()].getBlackThreat()) || (this.team === "Black" && !map[pos.getPos()].getWhiteThreat()) ) {
+                moves.push(pos);
+            }
+        }
+        return moves;
+    }
+
+    possiblemoves() {
+        var moves = [];
+        //up
+        var pos = new Position(this.position.getX(), this.position.getY() + 1);
+        this.isKingMovePosibble(pos, moves);
+        //down
+        var pos = new Position(this.position.getX(), this.position.getY() - 1);
+        this.isKingMovePosibble(pos, moves);
+        //Left
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY());
+        this.isKingMovePosibble(pos, moves);
+        //Right
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY());
+        this.isKingMovePosibble(pos, moves);
+        //diagonal
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() -1);
+        this.isKingMovePosibble(pos, moves);
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() -1);
+        this.isKingMovePosibble(pos, moves);
+        pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() +1);
+        this.isKingMovePosibble(pos, moves);
+        pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() +1);
+        this.isKingMovePosibble(pos, moves);
+        return moves;
     }
 }
 
@@ -466,6 +499,14 @@ class Space {
         return this.piece;
     }
 
+    getBlackThreat(){
+        return this.threatnedByBlack;
+    }
+
+    getWhiteThreat(){
+        return this.threatnedByWhite;
+    }
+
     setBlackThreat(threat) {
         this.threatnedByBlack = threat;
     }
@@ -477,6 +518,7 @@ class Space {
     clearSpace(){
         this.piece = undefined;
     }
+
     setPiece(piece) {
         if (this.piece !== undefined) {
             var a = this.piece;
@@ -502,16 +544,4 @@ class Space {
 }
 
 populateMap();
-var queenPos = new Position("D", 1);
-var queen = new Knight(queenPos, "White");
-var friendlyPawnPos = new Position("C",3);
-console.log(queen.possiblemoves());
-console.log(map[queenPos.getPos()].piece);
-console.log("new move");
-movePiece(queen, friendlyPawnPos);
-console.log(map[friendlyPawnPos.getPos()].piece);
-console.log(queen.possiblemoves());
-console.log(isVacant(new Position("D", 2)));
-//console.log(friendlyPawn.possiblemoves())
 
-console.log(moveXpos(queenPos.getX(), -2));
