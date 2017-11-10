@@ -181,11 +181,11 @@ function moveXpos(xPos, toTheRight) {
             // Black pawn
             let oneMoveForward = this.position.getY() - 1;
             //first move
-            if(this.position.getY() == 2){
+            if(this.position.getY() == 7){
                 if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
                     dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward));
-                    if(isVacant(new Position(this.position.getX(), oneMoveForward + 1))===null){
-                        dictPossibleMoves.push(dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward + 1)));
+                    if(isVacant(new Position(this.position.getX(), oneMoveForward - 1))===null){
+                        dictPossibleMoves.push(dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward - 1)));
                     }
                 }
             } else
@@ -303,10 +303,51 @@ class Knight {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+        addToMap(this, Position);
+    }
+    setPos(Position) {
+        this.position = Position;
     }
 
     getStringPos(){
         return this.position.getPos();
+    }
+
+    moveSides(right, direction, moves) {
+        var xPos = this.position.getX();
+        var yPos = this.position.getY();
+        for (i = 0; i < length; i++) {
+            xPos = moveXpos(xPos, right);
+            if(xPos === null) {
+                return moves;
+            }
+        }
+        if(xPos === null) {
+            return moves;
+        }
+        yPos += direction
+        var pos = new Position(xPos, yPos);
+        if (isVacant(pos) == null || isVacant(pos).team != piece.team) {
+            moves.push(pos);
+        }
+        return moves;
+    }
+
+    possiblemoves(){
+        var moves = [];
+        this.moveSides(2, 1, moves);
+        this.moveSides(2, -1, moves);
+        this.moveSides(-2, 1, moves);
+        this.moveSides(-2, -1, moves);
+
+        this.moveSides(1, 2, moves);
+        this.moveSides(1, -2, moves);
+        this.moveSides(-1, 2, moves);
+        this.moveSides(-1, -2, moves);
+
+
+
+        return moves;
     }
 }
 
@@ -494,8 +535,8 @@ class Space {
 
 populateMap();
 var queenPos = new Position("D", 1);
-var queen = new Queen(queenPos, "White");
-var friendlyPawnPos = new Position("D",2);
+var queen = new Knight(queenPos, "White");
+var friendlyPawnPos = new Position("C",3);
 console.log(queen.possiblemoves());
 console.log(map[queenPos.getPos()].piece);
 console.log("new move");
