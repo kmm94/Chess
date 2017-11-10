@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <title>Democratic chess</title>
 
-    <link rel="stylesheet" href="css/chessboard-0.3.0.css" />
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css"/>
 </head>
 <body>
 <table width="100%">
     <tr>
-        <td><h1>Board</h1></td>
-        <td><h1>Time left:</h1></td>
+        <th><h1>Board</h1></th>
+        <th>
+            <h1>Time left:
+                <div id="time" style=""></div>
+            </h1>
+        </th>
     </tr>
     <tr>
-        <td>
-            <div id="board" style="width: 400px"></div>
-        </td>
-        <td>
-            <div id="Moves list" style="width: 200px"></div>
-        </td>
+        <th>
+            <div id="board" style="width: 600px"></div>
+        </th>
+        <th>
+            <div id="movesList" style="width: 200px"></div>
+        </th>
     </tr>
 </table>
 
@@ -29,11 +33,36 @@
 <script src="js/json3.js"></script>
 <script>
     var init = function () {
+        var cfg = {
+            draggable: true,
+            dropOffBoard: 'snapback', // this is the default
+            position: 'start',
+            onDrop: onDrop
+        };
+        var board = ChessBoard('board', cfg);
+        board.on
+    };
+    $(document).ready(init);
 
-//--- start example JS ---
-        var board = ChessBoard('board');
-//--- end example JS ---
 
-    }; // end init()
-    $(document).ready(init);</script>
+    var onDrop = function(newLocation, oldLocation, source, spiece, position, orientation) {
+        if(oldLocation === newLocation) return;
+
+        
+
+        return 'snapback';
+    };
+
+    var timeLeft = 60;
+    var interval = window.setInterval(countdownTimer, 1000);
+
+    function countdownTimer() {
+        if (timeLeft === 0) {
+            window.clearInterval(interval);
+            return;
+        }
+        timeLeft -= 1;
+        document.getElementById("time").innerHTML = timeLeft + " seconds";
+    }
+</script>
 </html>
