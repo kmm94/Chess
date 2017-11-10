@@ -33,6 +33,7 @@
 <script src="js/json3.js"></script>
 <script src="js/require.js"></script>
 <script>
+    var board;
     var init = function () {
         var cfg = {
             draggable: true,
@@ -40,7 +41,7 @@
             position: 'start',
             onDrop: onDrop
         };
-        var board = ChessBoard('board', cfg);
+        board = ChessBoard('board', cfg);
         board.on
     };
     $(document).ready(init);
@@ -48,9 +49,7 @@
 
     var onDrop = function(newLocation, oldLocation, source, spiece, position, orientation) {
         if(oldLocation === newLocation) return;
-
-
-
+        sendMove(oldLocation, newLocation);
         return 'snapback';
     };
 
@@ -65,5 +64,41 @@
         timeLeft -= 1;
         document.getElementById("time").innerHTML = timeLeft + " seconds";
     }
+
+    var ws = new WebSocket('ws://'+window.location.hostname+':5000', 'echo-protocol');
+
+    function sendMove(oldLoc, newLoc){
+        var message = JSON.stringify({action: "move", oldLocation: newLoc, newLocation: oldLoc});
+        ws.send(message);
+    }
+
+    function isValidMessage(data) {
+        try {
+            JSON.parse(data);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    function handleServerMessage(event) {
+        var message = JSON.parse(event.data);
+        console.log(message);
+
+        if(message.action === "move") {
+            board.move(message.oldLocation + "-" + message.newLocation);
+        } else if(message.action === "newBoard") {
+
+        } else if(message.action === "timeLeft") {
+            timeLeft = message.timeLeft;
+            window.clearInterval(interval);
+            interval = window.setInterval(countdownTimer, 1000);
+        }
+    }
+
+    ws.addEventListener("message", function(e) {
+        handleServerMessage(e);
+    });
+
 </script>
 </html>

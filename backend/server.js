@@ -4,16 +4,22 @@ var clients = [];
 
 // Start a TCP Server
 var server = http.createServer(function (request, response) {
-}).listen("5000");
+});
+
+server.listen(5000, function () {
+    console.log("I am running!");
+});
+
 wsServer = new WebSocketServer({
     httpServer: server
 });
 
 wsServer.on('request', function (request) {
-    var connection = r.accept('echo-protocol', r.origin);
+    var connection = request.accept('echo-protocol', request.origin);
     clients.push(connection);
     var id = clients.length - 1;
     console.log((new Date()) + ' Connection accepted [' + id + ']');
+    connection.sendUTF(JSON.stringify("Welcome to the gameserver"));
 
     connection.on('message', function (message) {
         handleIncomingMessage(connection, message);
@@ -26,13 +32,39 @@ wsServer.on('request', function (request) {
 });
 
 function handleIncomingMessage(connection, data) {
-    Console.log(data);
+    if(!isValidMessage(data.utf8Data)) {
+        console.log("INVALID: " + JSON.stringify(data.utf8Data));
+        return;
+    }
+    var message = JSON.parse(data.utf8Data);
+    console.log("VALID: " + JSON.stringify(message));
+    console.log(message.action);
+
+    if(message.action === "move") {
+        voteMove(connection, message.oldLocation, message.newLocation)
+    } else if(message.action === "newBoard") {
+
+    } else if(message.action === "timeLeft") {
+
+    }
 }
 
-function broadcast(message, sender) {
+function voteMove(client, oldLoc, newLoc) {
+    broadcastMove(oldLoc, newLoc);
+}
+
+function isValidMessage(data) {
+    try {
+        JSON.parse(data);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+function broadcastMove(oldLocation, newLocation) {
     clients.forEach(function (client) {
-        if (client === sender) return;
-        client.sendUTF(message);
+       client.sendUTF(JSON.stringify({action: "move", oldLocation: oldLocation, newLocation: newLocation}));
     });
 }
 
