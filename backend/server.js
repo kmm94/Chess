@@ -1,8 +1,10 @@
 http = require('http');
+
 var WebSocketServer = require('websocket').server;
 var clients = [];
+var board = undefined;
 
-// Start a TCP Server
+
 var server = http.createServer(function (request, response) {
 });
 
@@ -31,6 +33,10 @@ wsServer.on('request', function (request) {
     });
 });
 
+function sendBoard(client) {
+    client.sendUTF(JSON.stringify({action: "newBoard", board: board.position()}))
+}
+
 function handleIncomingMessage(connection, data) {
     if(!isValidMessage(data.utf8Data)) {
         console.log("INVALID: " + JSON.stringify(data.utf8Data));
@@ -43,7 +49,7 @@ function handleIncomingMessage(connection, data) {
     if(message.action === "move") {
         voteMove(connection, message.oldLocation, message.newLocation)
     } else if(message.action === "newBoard") {
-
+        sendBoard(connection);
     } else if(message.action === "timeLeft") {
 
     }

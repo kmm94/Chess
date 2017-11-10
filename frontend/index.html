@@ -87,13 +87,18 @@
         if(message.action === "move") {
             board.move(message.oldLocation + "-" + message.newLocation);
         } else if(message.action === "newBoard") {
-
+            board.position(message.board);
         } else if(message.action === "timeLeft") {
             timeLeft = message.timeLeft;
             window.clearInterval(interval);
             interval = window.setInterval(countdownTimer, 1000);
         }
     }
+
+    ws.onopen = function (event) {
+        //TODO Implement this on the backend
+        //ws.send(JSON.stringify({action: "newBoard"}));
+    };
 
     ws.addEventListener("message", function(e) {
         handleServerMessage(e);
