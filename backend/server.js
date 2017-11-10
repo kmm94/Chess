@@ -1,33 +1,38 @@
-net = require('net');
+http = require('http');
+var WebSocketServer = require('websocket').server;
 var clients = [];
 
 // Start a TCP Server
-net.createServer(function (socket) {
+var server = http.createServer(function (request, response) {
+}).listen("5000");
+wsServer = new WebSocketServer({
+    httpServer: server
+});
 
-    socket.name = socket.remoteAddress + ":" + socket.remotePort
-    clients.push(socket);
+wsServer.on('request', function (request) {
+    var connection = r.accept('echo-protocol', r.origin);
+    clients.push(connection);
+    var id = clients.length - 1;
+    console.log((new Date()) + ' Connection accepted [' + id + ']');
 
-    socket.on('data', function (data) {
-        handleIncomingMessage(socket, data);
+    connection.on('message', function (message) {
+        handleIncomingMessage(connection, message);
     });
 
-    socket.on('end', function () {
-        clients.splice(clients.indexOf(socket), 1);
-        broadcast(socket.name + " left the chat.\n");
+    connection.on('close', function (reasonCode, description) {
+        delete clients[id];
+        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
+});
 
-
-}).listen(5000);
-
-function handleIncomingMessage(socket, data) {
-
+function handleIncomingMessage(connection, data) {
+    Console.log(data);
 }
-
 
 function broadcast(message, sender) {
     clients.forEach(function (client) {
         if (client === sender) return;
-        client.write(message);
+        client.sendUTF(message);
     });
 }
 
