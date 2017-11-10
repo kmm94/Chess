@@ -93,48 +93,16 @@ function isVacant(Position) {//checks if the given position has a piece on it re
     return true;
 }
 function moveXpos(xPos, toTheRight) {
+    var xPositions = ["A","B", "C", "D", "E", "F", "G", "H"];
     var x = xPos.toUpperCase();
-    if(toTheRight){
-        switch (x){
-            case "A":
-                return "B";
-            case "B":
-                return "C";
-            case "C":
-                return "D";
-            case "D":
-                return "E";
-            case "E":
-                return "F";
-            case "F":
-                return "G";
-            case "G":
-                return "H";
-            case "H":
-                return null;
-        }
-    } else {
-        switch (x){
-            case "A":
-                return null;
-            case "B":
-                return "A";
-            case "C":
-                return "B";
-            case "D":
-                return "C";
-            case "E":
-                return "D";
-            case "F":
-                return "E";
-            case "G":
-                return "F";
-            case "H":
-                return "G";
-        }
-    }
+    var pos = xPositions.indexOf(x)+1;
+    if(toTheRight === true) toTheRight = 1;
+    else if(toTheRight === false) toTheRight = -1;
 
-    return true;
+    if(pos+toTheRight <= 0) return null;
+    else if(pos+toTheRight >= 9) return null;
+
+    return xPositions[pos+toTheRight-1];
 }
 
  class Pawn {
@@ -543,3 +511,7 @@ console.log("new move");
 movePiece(queen, friendlyPawnPos);
 console.log(map[friendlyPawnPos.getPos()].piece);
 console.log(queen.possiblemoves());
+console.log(isVacant(new Position("D", 2)));
+//console.log(friendlyPawn.possiblemoves())
+
+console.log(moveXpos(queenPos.getX(), -2));

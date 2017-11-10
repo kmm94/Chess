@@ -3,7 +3,9 @@ http = require('http');
 var WebSocketServer = require('websocket').server;
 var clients = [];
 var board = undefined;
-
+var DEBUG = true;
+var TIME_PER_TURNS = 60;
+var timeLeft = 0;
 
 var server = http.createServer(function (request, response) {
 });
@@ -17,6 +19,10 @@ wsServer = new WebSocketServer({
 });
 
 wsServer.on('request', function (request) {
+    if(timerRunning === false) {
+        startTimer();
+    }
+
     var connection = request.accept('echo-protocol', request.origin);
     clients.push(connection);
     var id = clients.length - 1;
@@ -33,25 +39,65 @@ wsServer.on('request', function (request) {
     });
 });
 
+var interval;
+var timerRunning = false;
+
+function startTimer() {
+    stopTimer();
+    timerRunning = true;
+    interval = setInterval(countdownTimer, 1000);
+}
+
+function stopTimer() {
+    if(interval !== null) {
+        clearInterval(interval);
+        timerRunning = false;
+    }
+}
+
+function countdownTimer() {
+    if (timeLeft === 0) {
+        //TODO IMPLEMENT SERVERSIDE MOVING
+        timeLeft = TIME_PER_TURNS;
+        broadcastTimeLeft();
+        return;
+    }
+    timeLeft -= 1;
+    broadcastTimeLeft();
+}
+
+
 function sendBoard(client) {
-    client.sendUTF(JSON.stringify({action: "newBoard", board: board.position()}))
+    client.sendUTF(JSON.stringify({action: "newBoard", board: board.position()}));
+}
+
+function broadcastTimeLeft() {
+    clients.forEach(function (client) {
+        sendTimeLeft(client);
+    })
+}
+
+function sendTimeLeft(client) {
+    client.sendUTF(JSON.stringify({action: "timeLeft", time: timeLeft}));
 }
 
 function handleIncomingMessage(connection, data) {
     if(!isValidMessage(data.utf8Data)) {
-        console.log("INVALID: " + JSON.stringify(data.utf8Data));
+        if(DEBUG) console.log("INVALID: " + JSON.stringify(data.utf8Data));
         return;
     }
     var message = JSON.parse(data.utf8Data);
-    console.log("VALID: " + JSON.stringify(message));
-    console.log(message.action);
+    if(DEBUG) {
+        console.log("VALID: " + JSON.stringify(message));
+        console.log(message.action);
+    }
 
     if(message.action === "move") {
         voteMove(connection, message.oldLocation, message.newLocation)
     } else if(message.action === "newBoard") {
         sendBoard(connection);
     } else if(message.action === "timeLeft") {
-
+        sendTimeLeft(connection);
     }
 }
 

@@ -52,15 +52,7 @@
         return 'snapback';
     };
 
-    var timeLeft = 60;
-    var interval = window.setInterval(countdownTimer, 1000);
-
-    function countdownTimer() {
-        if (timeLeft === 0) {
-            window.clearInterval(interval);
-            return;
-        }
-        timeLeft -= 1;
+    function updateTimer(timeLeft) {
         document.getElementById("time").innerHTML = timeLeft + " seconds";
     }
 
@@ -89,15 +81,18 @@
         } else if(message.action === "newBoard") {
             board.position(message.board);
         } else if(message.action === "timeLeft") {
-            timeLeft = message.timeLeft;
-            window.clearInterval(interval);
-            interval = window.setInterval(countdownTimer, 1000);
+            updateTimer(message.time);
         }
+    }
+
+    function requestTime() {
+        ws.send(JSON.stringify({action: "timeLeft"}));
     }
 
     ws.onopen = function (event) {
         //TODO Implement this on the backend
         //ws.send(JSON.stringify({action: "newBoard"}));
+        requestTime();
     };
 
     ws.addEventListener("message", function(e) {
