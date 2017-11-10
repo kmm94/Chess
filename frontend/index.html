@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Democratic chess</title>
+
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css"/>
+</head>
+<body>
+<table width="100%">
+    <tr>
+        <th><h1>Board</h1></th>
+        <th>
+            <h1>Time left:
+                <div id="time" style=""></div>
+            </h1>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <div id="board" style="width: 600px"></div>
+        </th>
+        <th>
+            <div id="movesList" style="width: 200px"></div>
+        </th>
+    </tr>
+</table>
+
+</body>
+
+<script src="js/chessboard-0.3.0.js"></script>
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/json3.js"></script>
+<script src="js/require.js"></script>
+<script>
+    var init = function () {
+        var cfg = {
+            draggable: true,
+            dropOffBoard: 'snapback', // this is the default
+            position: 'start',
+            onDrop: onDrop
+        };
+        var board = ChessBoard('board', cfg);
+        board.on
+    };
+    $(document).ready(init);
+
+
+    var onDrop = function(newLocation, oldLocation, source, spiece, position, orientation) {
+        if(oldLocation === newLocation) return;
+
+
+
+        return 'snapback';
+    };
+
+    var timeLeft = 60;
+    var interval = window.setInterval(countdownTimer, 1000);
+
+    function countdownTimer() {
+        if (timeLeft === 0) {
+            window.clearInterval(interval);
+            return;
+        }
+        timeLeft -= 1;
+        document.getElementById("time").innerHTML = timeLeft + " seconds";
+    }
+</script>
+</html>
