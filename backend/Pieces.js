@@ -367,12 +367,8 @@ class Bishop {
 class Queen {
     constructor(Position, Team) {
         this.team = Team;
-        addToMap(this, Position);
         this.position = Position;
-    }
-
-    getPos() {
-        return this.xpos + this.ypos;
+        addToMap(this, Position);
     }
 
     setPos(Position) {
@@ -380,7 +376,7 @@ class Queen {
     }
 
     getStringPos(){
-        return this.getPos();
+        return this.position.getPos();
     }
 
     possiblemoves(){
@@ -448,8 +444,7 @@ function calcThreat() {
 class Space {
     constructor(Position) {
         this.position = Position;
-        this.piece = null;
-        this.threatenedBy = [];
+        this.piece = undefined;
         this.threatnedByBlack = false;
         this.threatnedByWhite = false;
     }
@@ -471,12 +466,12 @@ class Space {
     }
 
     clearSpace(){
-        this.piece = null;
+        this.piece = undefined;
     }
     setPiece(piece) {
-        if (this.piece != null) {
+        if (this.piece !== undefined) {
             var a = this.piece;
-            if (this.getPiece().team != piece.team) {
+            if (this.getPiece().team !== piece.team) {
                 var index = livingPieces.indexOf(this.piece);
                 livingPieces.splice(index, 1);
                 this.piece = piece;
@@ -486,27 +481,24 @@ class Space {
             } else {
                 return false;
             }
+        } else {
             var oldSpace = map[piece.getStringPos()];
             oldSpace.clearSpace();
+            this.piece = piece;
             piece.setPos(this.position);
             calcThreat();
+            return true;
         }
-        this.piece = piece;
-        return true;
     }
 }
 
 populateMap();
 var queenPos = new Position("D", 1);
 var queen = new Queen(queenPos, "White");
-var enemyPos = new Position("D", 2);
-var enemyPawn = new Pawn(enemyPos, "Black");
-var friendlyPawnPos = new Position("D",3);
-//var friendlyPawn = new Pawn(friendlyPawnPos, "White");
-movePiece(queen, enemyPos);
+var friendlyPawnPos = new Position("D",2);
 console.log(queen.possiblemoves());
+console.log(map[queenPos.getPos()].piece);
 console.log("new move");
 movePiece(queen, friendlyPawnPos);
+console.log(map[friendlyPawnPos.getPos()].piece);
 console.log(queen.possiblemoves());
-console.log(isVacant(new Position("D", 2)));
-console.log(friendlyPawn.possiblemoves())
