@@ -18,12 +18,12 @@ function populateMap() {
     }
 }
 
-
 class Position {
     constructor(xpos, ypos) {
         this.xpos = xpos;
         this.ypos = ypos;
     }
+
     getPos() {
         return this.xpos+this.ypos;
     }
@@ -55,7 +55,9 @@ class Position {
 class Team {
     constructor(team) {
         this.team = team;
+        var a;
     }
+
     getTeam() {
         return this.team;
     }
@@ -84,11 +86,11 @@ function addToMap(Piece, Position) {
 }
 
 function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
-    Space = map[Position.getPos()];
-    if (Space.getPiece() == null) {
+    space = map[Position.getPos()];
+    if (space.getPiece() === null) {
         return null;
     } else {
-        return Space.getPiece();
+        return space.getPiece();
     }
     return true;
 }
@@ -249,7 +251,7 @@ function movesLeftRight(dict, piece, toTheRight){
 function movesUpDown(dict, piece, direction){
     var xPos = piece.position.getX();
     var yPos = piece.position.getY();
-    while (True){
+    while (true){
         yPos = yPos + direction;
         if (yPos > 8 || yPos < 1){
             break;
@@ -323,6 +325,10 @@ class Bishop {
         this.position = Position;
     }
 
+    getStringPos() {
+        return this.position.getPos();
+    }
+
     setPos(Position) {
         this.position = Position;
     }
@@ -353,51 +359,48 @@ class Queen {
 class King {
     constructor(Position, Team){
         this.team = Team;
-        this.position = Position;
         addToMap(this, Position);
+        this.position = Position;
     }
+
+    setPos(Position) {
+        this.position = Position;
+    }
+
+    isKingMovePosibble(pos, moves) {
+        if (map[pos.getPos()] !== undefined && (isVacant(pos) === null || isVacant(pos).team !== this.team)) {
+            if ((this.team === "White" && !map[pos.getPos()].getBlackThreat()) || (this.team === "Black" && !map[pos.getPos()].getWhiteThreat()) ) {
+                moves.push(pos);
+            }
+        }
+        return moves;
+    }
+
     possiblemoves() {
         var moves = [];
-
-        //up and down
+        //up
         var pos = new Position(this.position.getX(), this.position.getY() + 1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
-
-        pos =  new Position(this.position.getX(), this.position.getY() - 1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
-
-        //Left and right
+        this.isKingMovePosibble(pos, moves);
+        //down
+        var pos = new Position(this.position.getX(), this.position.getY() - 1);
+        this.isKingMovePosibble(pos, moves);
+        //Left
         pos = new Position(moveXpos(this.position.getX(), true), this.position.getY());
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
+        this.isKingMovePosibble(pos, moves);
+        //Right
         pos = new Position(moveXpos(this.position.getX(), false), this.position.getY());
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
-
+        this.isKingMovePosibble(pos, moves);
         //diagonal
         pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() -1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
+        this.isKingMovePosibble(pos, moves);
         pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() -1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
+        this.isKingMovePosibble(pos, moves);
         pos = new Position(moveXpos(this.position.getX(), false), this.position.getY() +1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
+        this.isKingMovePosibble(pos, moves);
         pos = new Position(moveXpos(this.position.getX(), true), this.position.getY() +1);
-        if (isVacant(pos) === null && map[pos.getPos()]) {
-            moves.push(pos);
-        }
+        this.isKingMovePosibble(pos, moves);
 
+        console.log(moves);
         return moves;
     }
 }
@@ -459,6 +462,7 @@ class Space {
 
     setPiece(piece) {
         if (this.piece != null) {
+
             var a = this.piece;
             if (this.getPiece().team != piece.team) {
                 var index = livingPieces.indexOf(this.piece);
@@ -480,19 +484,8 @@ class Space {
 
 populateMap();
 var bishPos = new Position("C", 1);
-var bish = new Bishop(bishPos, "White");
-// console.log(isVacant(bishPos));
-var enemyPos = new Position("B", 2);
-var enemyPawn = new Pawn(enemyPos, "Black");
-var friendlyPawnPos = new Position("A",1);
-var friendlyPawn = new Pawn(friendlyPawnPos, "White");
-// console.log(friendlyPawn.possiblemoves());
-// console.log(isVacant(enemyPos));
-// console.log("Moving Bishop");
-// movePiece(bish, enemyPos);
-// console.log(bish);
-// movePiece(friendlyPawn,friendlyPawn.possiblemoves()[0]);
-// console.log(isVacant(new Position("A",2)));
-// movePiece(friendlyPawn,friendlyPawn.possiblemoves()[1]);
-console.log(isVacant(new Position("B", 1)));
-var WKing = new King(new Position("B",1), "White");
+var kingPos = new Position("B", 2);
+var enemy = new Position("D", 3);
+var bishop = new Bishop(enemy, "Black");
+var WKing = new King(kingPos, "White");
+
