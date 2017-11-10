@@ -25,7 +25,7 @@ class Position {
         this.ypos = ypos;
     }
     getPos() {
-        return this.xpos+this.ypos;
+        return this.xpos + this.ypos;
     }
     getY() {
         return this.ypos;
@@ -214,6 +214,10 @@ function moveXpos(xPos, toTheRight) {
         this.position = Position;
     }
 
+     getStringPos(){
+         return this.position.getPos();
+     }
+
 
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team));
@@ -249,7 +253,7 @@ function movesLeftRight(dict, piece, toTheRight){
 function movesUpDown(dict, piece, direction){
     var xPos = piece.position.getX();
     var yPos = piece.position.getY();
-    while (True){
+    while (true){
         yPos = yPos + direction;
         if (yPos > 8 || yPos < 1){
             break;
@@ -257,7 +261,7 @@ function movesUpDown(dict, piece, direction){
         var newPos = new Position(xPos, yPos);
         if (isVacant(newPos) == null){
             dict.push(newPos);
-        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
+        } else if (isVacant(newPos).team != piece.team){
             dict.push(newPos);
             break;
         }
@@ -269,6 +273,14 @@ class Rook {
         this.team = Team;
         this.position = Position;
         addToMap(this, Position);
+    }
+
+    setPos(Position){
+        this.position = Position;
+    }
+
+    getStringPos(){
+        return this.position.getPos();
     }
 
     possiblemoves(){
@@ -283,6 +295,7 @@ class Rook {
         movesUpDown(dict, this, 1);
         // Down
         movesUpDown(dict, this, -1);
+        return dict;
     }
 }
 
@@ -290,6 +303,10 @@ class Knight {
     constructor(Position, Team){
         this.team = Team;
         this.position = Position;
+    }
+
+    getStringPos(){
+        return this.position.getPos();
     }
 }
 
@@ -327,6 +344,10 @@ class Bishop {
         this.position = Position;
     }
 
+    getStringPos(){
+        return this.position.getPos();
+    }
+
     possiblemoves(){
         var dict = [];
         var xPos = this.position.getX();
@@ -344,9 +365,45 @@ class Bishop {
 }
 
 class Queen {
-    constructor(Position, Team){
+    constructor(Position, Team) {
         this.team = Team;
+        addToMap(this, Position);
         this.position = Position;
+    }
+
+    getPos() {
+        return this.xpos + this.ypos;
+    }
+
+    setPos(Position) {
+        this.position = Position;
+    }
+
+    getStringPos(){
+        return this.getPos();
+    }
+
+    possiblemoves(){
+        var dict = [];
+        var xPos = this.position.getX();
+        var yPos = this.position.getY();
+        //Right up
+        crossmoves(dict, this, 1, true);
+        //Left up
+        crossmoves(dict, this, 1, false);
+        //Right down
+        crossmoves(dict, this, -1, true);
+        //Left down
+        crossmoves(dict, this, -1, false);
+        //Left
+        movesLeftRight(dict, this, false);
+        //Right
+        movesLeftRight(dict, this, true);
+        //Up
+        movesUpDown(dict, this, 1);
+        //Down
+        movesUpDown(dict, this, -1);
+        return dict;
     }
 }
 
@@ -358,6 +415,10 @@ class King {
     possiblemoves() {
         var dict = {};
 
+    }
+
+    getStringPos(){
+        return this.position.getPos();
     }
 }
 
@@ -409,6 +470,9 @@ class Space {
         this.threatnedByWhite = threat;
     }
 
+    clearSpace(){
+        this.piece = null;
+    }
     setPiece(piece) {
         if (this.piece != null) {
             var a = this.piece;
@@ -422,31 +486,27 @@ class Space {
             } else {
                 return false;
             }
+            var oldSpace = map[piece.getStringPos()];
+            oldSpace.clearSpace();
+            piece.setPos(this.position);
+            calcThreat();
         }
         this.piece = piece;
-        piece.setPos(this.position);
-        calcThreat();
         return true;
     }
 }
 
 populateMap();
-var bishPos = new Position("C", 1);
-var bish = new Bishop(bishPos, "White");
-// console.log(isVacant(bishPos));
-var enemyPos = new Position("B", 2);
+var queenPos = new Position("D", 1);
+var queen = new Queen(queenPos, "White");
+var enemyPos = new Position("D", 2);
 var enemyPawn = new Pawn(enemyPos, "Black");
-var friendlyPawnPos = new Position("A",1);
-var friendlyPawn = new Pawn(friendlyPawnPos, "White");
-// console.log(friendlyPawn.possiblemoves());
-// console.log(isVacant(enemyPos));
-// console.log("Moving Bishop");
-movePiece(bish, enemyPos);
-// console.log(bish);
-console.log(friendlyPawn.possiblemoves());
-movePiece(friendlyPawn,friendlyPawn.possiblemoves()[0]);
-// console.log(isVacant(new Position("A",2)));
-console.log(friendlyPawn.possiblemoves());
-movePiece(friendlyPawn,friendlyPawn.possiblemoves()[1]);
-console.log(isVacant(new Position("A", 4)));
+var friendlyPawnPos = new Position("D",3);
+//var friendlyPawn = new Pawn(friendlyPawnPos, "White");
+movePiece(queen, enemyPos);
+console.log(queen.possiblemoves());
+console.log("new move");
+movePiece(queen, friendlyPawnPos);
+console.log(queen.possiblemoves());
+console.log(isVacant(new Position("D", 2)));
 console.log(friendlyPawn.possiblemoves())
