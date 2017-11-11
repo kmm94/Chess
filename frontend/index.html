@@ -89,7 +89,7 @@
         } else if (message.action === "timeLeft") {
             updateTimer(message.time);
         } else if(message.action === "error") {
-            alert(message);
+            alert(message.message);
         } else if(message.action === "currentSide") {
             document.getElementById("currentSide").innerHTML = message.currentSide;
         } else if(message.action === "movesList") {
