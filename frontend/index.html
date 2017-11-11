@@ -9,7 +9,7 @@
 <body>
 <table width="100%">
     <tr>
-        <th><h1>Board</h1></th>
+        <th><h1>Board</h1> <div id="color"></div></th>
         <th>
             <h1>Time left:
                 <div id="time" style=""></div>
@@ -100,6 +100,8 @@
                     document.getElementById("movesList").innerHTML += "<p>" + parsedMoves[move].key + ": " + parsedMoves[move].value + " votes </p>";
                 }
             }
+        } else if(message.action === "color") {
+            document.getElementById("color").innerHTML = "Your color is " + message.color;
         }
     }
 

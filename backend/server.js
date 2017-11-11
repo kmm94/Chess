@@ -42,6 +42,8 @@ wsServer.on('request', function (request) {
         whiteCount++;
     }
 
+    connection.sendUTF(JSON.stringify({action: "color", color: clientAlignment[id]}))
+
     connection.on('message', function (message) {
         handleIncomingMessage(connection, message);
     });
