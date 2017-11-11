@@ -150,7 +150,6 @@ class Space {
                 livingPieces.splice(index, 1);
                 this.piece = piece;
                 piece.setPos(this.position);
-                calcThreat();
                 return true;
             } else {
                 return false;
@@ -160,7 +159,6 @@ class Space {
             oldSpace.clearSpace();
             this.piece = piece;
             piece.setPos(this.position);
-            calcThreat();
             return true;
         }
     }
@@ -391,6 +389,7 @@ class King extends Piece {
     }
 
     possiblemoves() {
+        calcThreat();
         var moves = [];
         //up
         var pos = new Position(this.position.getX(), this.position.getY() + 1);
