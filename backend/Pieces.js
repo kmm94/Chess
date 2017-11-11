@@ -53,25 +53,26 @@ function getColor(position) {
 }
 
 function isValidMove(from, to) {
-    var from = convertStringPosToPosition(from);
-    var to = convertStringPosToPosition(to);
-    var piece = map[from.getPos()].getPiece();
+    var convertedFrom = convertStringPosToPosition(from);
+    var convertedTo = convertStringPosToPosition(to);
+    var piece = map[convertedFrom.getPos()].getPiece();
     if (piece === undefined) {
         return false;
     }
-    if (piece.team == "White" && !whitesTurn) {
+    if (piece.team === "White" && !whitesTurn) {
         return false;
-    } else if (piece.team == "Black" && whitesTurn) {
+    } else if (piece.team === "Black" && whitesTurn) {
         return false;
     } else {
-        var moves = Piece.possiblemoves();
-        for (i = 0; i <= moves.length; i++) {
+        var moves = piece.possiblemoves();
+        for (var i = 0; i <= moves.length; i++) {
             var pos = moves[i];
-            if (pos.isEquals(to)) {
+            if (pos !== undefined && pos.isEquals(convertedTo)) {
                 return true;
             }
         }
     }
+    return false;
 }
 
 function movePieceByCoord(from, to) {
@@ -86,7 +87,11 @@ function movePieceByCoord(from, to) {
     } else if (piece.team == "Black" && whitesTurn) {
         return false;
     } else {
-        return movePiece(piece, to);
+        if(movePiece(piece, to)) {
+            whitesTurn = !whitesTurn;
+            return true;
+        }
+        return false;
     }
 }
 

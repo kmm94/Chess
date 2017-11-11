@@ -96,6 +96,7 @@ function performMove() {
     var moves = sumVotes();
     if(moves.length === 0) return false;
     var move = moves[0].key;
+    board.movePieceByCoord(move.split("-")[0], move.split("-")[1]);
     broadcastMove(move.split("-")[0], move.split("-")[1]);
     clientVotes = {};
     broadcastVotes();
@@ -203,11 +204,17 @@ function sendErrorMessage(client, message) {
 }
 
 function voteMove(id, oldLoc, newLoc) {
-    if (clientAlignment[id] === currentSide && board.getColor(oldLoc+"-"+newLoc) === clientAlignment[id]) {
-        clientVotes[id] = oldLoc+"-"+newLoc;
-        broadcastVotes();
+    if (clientAlignment[id] !== currentSide) sendErrorMessage(clients[id], "Not your turn yet");
+
+    if(board.getColor(oldLoc+"-"+newLoc) === clientAlignment[id]) {
+        if (board.isValidMove(oldLoc, newLoc)) {
+            clientVotes[id] = oldLoc + "-" + newLoc;
+            broadcastVotes();
+        } else {
+            sendErrorMessage(clients[id], "Invalid move");
+        }
     } else {
-        sendErrorMessage(clients[id], "Not your turn yet");
+        sendErrorMessage(clients[id], "You can only move " + clientAlignment[id] + " pieces");
     }
 }
 
