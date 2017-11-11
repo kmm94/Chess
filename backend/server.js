@@ -72,12 +72,19 @@ function stopTimer() {
     }
 }
 
+function broadcastCurrentSide() {
+    clients.forEach(function (client) {
+        sendCurrentSide(client);
+    });
+}
+
 function swapSide() {
     if (currentSide === "white") {
         currentSide = "black";
     } else {
         currentSide = "white";
     }
+    broadcastCurrentSide();
 }
 
 function countdownTimer() {
