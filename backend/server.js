@@ -141,7 +141,7 @@ function handleIncomingMessage(connection, data) {
 }
 
 function sendErrorMessage(client, message) {
-    client.sendUTF(JSON.stringify({action: "error", message: message}))
+    client.sendUTF(JSON.stringify({action: "error", message: message.toString()}))
 }
 
 function voteMove(client, oldLoc, newLoc) {
