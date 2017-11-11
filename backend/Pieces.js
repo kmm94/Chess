@@ -30,9 +30,9 @@ function movePieceByCoord(from, to) {
     if (piece === undefined) {
         return false;
     }
-    if (piece.getTeam() == "White" && !whitesTurn) {
+    if (piece.team == "White" && !whitesTurn) {
         return false;
-    } else if (piece.getTeam() == "Black" && whitesTurn) {
+    } else if (piece.team == "Black" && whitesTurn) {
         return false;
     } else {
         return movePiece(piece, to);
@@ -64,7 +64,9 @@ function addToMap(Piece, Position) {
 
 function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
     space = map[Position.getPos()];
-    if (space.getPiece() === null) {
+    console.log(space);
+
+    if (space.getPiece() === undefined) {
         return null;
     } else {
         return space.getPiece();
@@ -176,6 +178,27 @@ class Team {
     }
 }
 
+class Piece {
+    constructor(Position, Team) {
+        this.team = Team;
+        this.position = Position;
+        addToMap(this, Position);
+    }
+
+    setPos(Position) {
+        this.position = Position;
+    }
+
+    possiblemoves(){
+        return [];
+    }
+
+    getStringPos(){
+        return this.position.getPos();
+    }
+}
+
+
  class Pawn {
     constructor(Position, Team){
         this.team = Team;
@@ -211,7 +234,7 @@ class Team {
                 }
             }
             if(toLeft !== null) {
-                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "Black"){
+                if(isVacant(new Position(toLeft, oneMoveForward))!== null && isVacant(new Position(toLeft, oneMoveForward)).team === "Black"){
                     dictPossibleMoves.push(new Position(toLeft, oneMoveForward));
                 }
             }
@@ -224,7 +247,7 @@ class Team {
                 if(isVacant(new Position(this.position.getX(), oneMoveForward))===null) {
                     dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward));
                     if(isVacant(new Position(this.position.getX(), oneMoveForward - 1))===null){
-                        dictPossibleMoves.push(dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward - 1)));
+                        dictPossibleMoves.push(new Position(this.position.getX(), oneMoveForward - 1));
                     }
                 }
             } else
@@ -241,7 +264,7 @@ class Team {
                 }
             }
             if(toLeft !== null) {
-                if(isVacant(new Position(toRight, oneMoveForward))!== null && isVacant(new Position(toRight, oneMoveForward)).team === "White"){
+                if(isVacant(new Position(toLeft, oneMoveForward))!== null && isVacant(new Position(toLeft, oneMoveForward)).team === "White"){
                     dictPossibleMoves.push(new Position(toLeft, oneMoveForward));
                 }
             }
@@ -271,23 +294,7 @@ class Team {
     }
 }
 
-function movesLeftRight(dict, piece, toTheRight){
-    var xPos = piece.position.getX();
-    var yPos = piece.position.getY();
-    while(true){
-        xPos = moveXpos(xPos, toTheRight);
-        if (xPos != null){
-            break;
-        }
-        var newPos = new Position(xPos, yPos);
-        if (isVacant(newPos) == null){
-            dict.push(newPos);
-        } else if (isVacant(newPos).getTeam()!== piece.getTeam()){
-            dict.push(newPos);
-            break;
-        }
-    }
-}
+
 
 class Rook {
     constructor(Position, Team){
@@ -305,7 +312,7 @@ class Rook {
     }
 
     possiblemoves(){
-        var dict = {};
+        var dict = [];
         var xPos = this.position.getX();
         var yPos = this.position.getY();
         // Right
@@ -337,18 +344,16 @@ class Knight {
     moveSides(right, direction, moves) {
         var xPos = this.position.getX();
         var yPos = this.position.getY();
-        for (i = 0; i < length; i++) {
-            xPos = moveXpos(xPos, right);
-            if(xPos === null) {
-                return moves;
-            }
-        }
+        xPos = moveXpos(xPos, right);
         if(xPos === null) {
-            return moves;
+                return moves;
         }
         yPos += direction
+        if(yPos <= 0 || yPos >= 8) {
+            return moves;
+        }
         var pos = new Position(xPos, yPos);
-        if (isVacant(pos) == null || isVacant(pos).team != piece.team) {
+        if (isVacant(pos) == null || isVacant(pos).team != this.team) {
             moves.push(pos);
         }
         return moves;
@@ -375,8 +380,8 @@ class Knight {
 class Bishop {
     constructor(Position, Team){
         this.team = Team;
-        addToMap(this, Position);
         this.position = Position;
+        addToMap(this, Position);
     }
 
     setPos(Position) {
@@ -445,12 +450,16 @@ class Queen {
 class King {
     constructor(Position, Team){
         this.team = Team;
-        addToMap(this, Position);
         this.position = Position;
+        addToMap(this, Position);
     }
 
     setPos(Position) {
         this.position = Position;
+    }
+
+    getStringPos(){
+        return this.position.getPos();
     }
 
     isKingMovePosibble(pos, moves) {
@@ -489,6 +498,24 @@ class King {
     }
 }
 
+function movesLeftRight(dict, piece, toTheRight){
+    var xPos = piece.position.getX();
+    var yPos = piece.position.getY();
+    while(true){
+        xPos = moveXpos(xPos, toTheRight);
+        if (xPos == null){
+            break;
+        }
+        var newPos = new Position(xPos, yPos);
+        if (isVacant(newPos) == null){
+            dict.push(newPos);
+        } else if (isVacant(newPos).team !== piece.team){
+            dict.push(newPos);
+            break;
+        }
+    }
+}
+
 function movesUpDown(dict, piece, direction){
     var xPos = piece.position.getX();
     var yPos = piece.position.getY();
@@ -506,8 +533,6 @@ function movesUpDown(dict, piece, direction){
         }
     }
 }
-
-
 
 function crossmoves(dict,piece, direction, toTheRight) {
     var xPos = piece.position.getX();
@@ -557,8 +582,8 @@ function calcThreat() {
         var team = piece.team;
         var threasts = piece.possiblemoves();
         for (k = 0; k < threasts.length; k++) {
-            var Position = threasts[k];
-            var Space = map[Position.getPos()];
+            var position = threasts[k];
+            var Space = map[position.getPos()];
             if(team==="Black") {
                 Space.setBlackThreat(true);
             } else if (team==="White") {
@@ -571,53 +596,54 @@ function calcThreat() {
 function addBlackPieces() {
     var team = "Black"
     var position = new Position("A", 8)
-    addToMap(new Rook(position, team), position);
+    new Rook(position, team);
     var position = new Position("B", 8)
-    addToMap(new Knight(position, team), position);
+    new Knight(position, team);
     var position = new Position("C", 8)
-    addToMap(new Bishop(position, team), position);
+    new Bishop(position, team);
     var position = new Position("D", 8)
-    addToMap(new Queen(position, team), position);
+    new Queen(position, team);
     var position = new Position("E", 8)
-    addToMap(new King(position, team), position);
+    new King(position, team);
     var position = new Position("F", 8)
-    addToMap(new Bishop(position, team), position);
+    new Bishop(position, team);
     var position = new Position("G", 8)
-    addToMap(new Knight(position, team), position);
+    new Knight(position, team);
     var position = new Position("H", 8)
-    addToMap(new Rook(position, team), position);
+    new Rook(position, team);
 
     //pawns
     for (i = 0; i < 8; i++) {
         var position = new Position(moveXpos("A", i), 7);
-        addToMap(new Pawn(position, team), position);
+        new Pawn(position, team);
     }
 }
 
-function  {
+function addWhitePieces() {
     var team = "White"
     var position = new Position("A", 1)
-    addToMap(new Rook(position, team), position);
+    new Rook(position, team);
     var position = new Position("B", 1)
-    addToMap(new Knight(position, team), position);
+    new Knight(position, team);
     var position = new Position("C", 1)
-    addToMap(new Bishop(position, team), position);
+    new Bishop(position, team);
     var position = new Position("D", 1)
-    addToMap(new Queen(position, team), position);
+    new Queen(position, team);
     var position = new Position("E", 1)
-    addToMap(new King(position, team), position);
+    new King(position, team);
     var position = new Position("F", 1)
-    addToMap(new Bishop(position, team), position);
+    new Bishop(position, team);
     var position = new Position("G", 1)
-    addToMap(new Knight(position, team), position);
+    new Knight(position, team);
     var position = new Position("H", 1)
-    addToMap(new Rook(position, team), position);
+    new Rook(position, team);
 
     //pawns
     for (i = 0; i < 8; i++) {
         var position = new Position(moveXpos("A", i), 2);
-        addToMap(new Pawn(position, team), position);
+        new Pawn(position, team);
     }
 }
+
 
 
