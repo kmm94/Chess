@@ -90,9 +90,9 @@ function swapSide() {
 
 function performMove() {
     var moves = sumVotes();
-    if(Object.keys(moves)[0] === undefined || Object.keys(moves)[0] === null) return false;
-    console.log(Object.keys(moves)[0].split("-")[0], Object.keys(moves)[0].split("-")[1]);
-    broadcastMove(Object.keys(moves)[0].split("-")[0], Object.keys(moves)[0].split("-")[1]);
+    if(moves.length === 0) return false;
+    var move = moves[0].key;
+    broadcastMove(move.split("-")[0], move.split("-")[1]);
     clientVotes = {};
     broadcastVotes();
     return true;
