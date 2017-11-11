@@ -2,6 +2,14 @@ var map = [];
 var livingPieces = [];
 var whitesTurn = true;
 
+module.exports = {
+    initialiseBoard: initialiseBoard();
+    getBoard: getBoard();
+    getColor: getColor(position);
+    isValidMove: isValidMove(from, to);
+    movePieceByCoord: movePieceByCoord(from, to);
+}
+
 function populateMap() {
     var xPos = "A";
     var notDone = true;
@@ -34,7 +42,41 @@ function initialiseBoard() {
     addBlackPieces();
 }
 
+function convertStringPosToPosition(position) {
+    return new Position(position.match(/./g)[0],position.match(/./g)[1]);
+}
+
+function getColor(position) {
+    var position = convertStringPosToPosition(position);
+    var piece = map[from.getPos()].getPiece();
+    return piece.team;
+}
+
+function isValidMove(from, to) {
+    var from = convertStringPosToPosition(from);
+    var to = convertStringPosToPosition(to);
+    var piece = map[from.getPos()].getPiece();
+    if (piece === undefined) {
+        return false;
+    }
+    if (piece.team == "White" && !whitesTurn) {
+        return false;
+    } else if (piece.team == "Black" && whitesTurn) {
+        return false;
+    } else {
+        var moves = Piece.possiblemoves();
+        for (i = 0; i <= moves.length; i++) {
+            var pos = moves[i];
+            if (pos.isEquals(to)) {
+                return true;
+            }
+        }
+    }
+}
+
 function movePieceByCoord(from, to) {
+    var from = convertStringPosToPosition(from);
+    var to = convertStringPosToPosition(to);
     var piece = map[from.getPos()].getPiece();
     if (piece === undefined) {
         return false;
@@ -47,7 +89,6 @@ function movePieceByCoord(from, to) {
         return movePiece(piece, to);
     }
 }
-
 
 /**
  * Returns true if the move was succesful. Returns false if the move wasn't made.
@@ -626,4 +667,5 @@ function addWhitePieces() {
 
 initialiseBoard();
 movePieceByCoord(new Position("A", 2), new Position("A", 3));
-console.log(getBoard());
+var String = "d6";
+console.log(String.match(/./g)[1]);
