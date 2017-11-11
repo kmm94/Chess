@@ -3,11 +3,11 @@ var livingPieces = [];
 var whitesTurn = true;
 
 module.exports = {
-    initialiseBoard: initialiseBoard();
-    getBoard: getBoard();
-    getColor: getColor(position);
-    isValidMove: isValidMove(from, to);
-    movePieceByCoord: movePieceByCoord(from, to);
+    initialiseBoard: initialiseBoard,
+    getBoard: getBoard,
+    getColor: getColor,
+    isValidMove: isValidMove,
+    movePieceByCoord: movePieceByCoord,
 }
 
 function populateMap() {
@@ -43,13 +43,13 @@ function initialiseBoard() {
 }
 
 function convertStringPosToPosition(position) {
-    return new Position(position.match(/./g)[0],position.match(/./g)[1]);
+    return new Position(position.match(/./g)[0].toUpperCase(),position.match(/./g)[1]);
 }
 
 function getColor(position) {
-    var position = convertStringPosToPosition(position);
+    var from = convertStringPosToPosition(position);
     var piece = map[from.getPos()].getPiece();
-    return piece.team;
+    return piece.team.toLowerCase();
 }
 
 function isValidMove(from, to) {
@@ -664,8 +664,3 @@ function addWhitePieces() {
         new Pawn(position, team);
     }
 }
-
-initialiseBoard();
-movePieceByCoord(new Position("A", 2), new Position("A", 3));
-var String = "d6";
-console.log(String.match(/./g)[1]);

@@ -2,15 +2,17 @@ http = require('http');
 
 var WebSocketServer = require('websocket').server;
 var clients = [];
-var board = undefined;
+var board = require('./Pieces');
 var DEBUG = true;
-var TIME_PER_TURNS = 60;
+var TIME_PER_TURNS = 10;
 var timeLeft = 0;
 var currentSide = "white";
 var clientAlignment = {};
 var blackCount = 0;
 var whiteCount = 0;
 var clientVotes = {};
+
+board.initialiseBoard();
 
 var server = http.createServer(function (request, response) {
 });
@@ -201,7 +203,7 @@ function sendErrorMessage(client, message) {
 }
 
 function voteMove(id, oldLoc, newLoc) {
-    if (clientAlignment[id] === currentSide) { //TODO Implement so you can only move your own side
+    if (clientAlignment[id] === currentSide && board.getColor(oldLoc+"-"+newLoc) === clientAlignment[id]) {
         clientVotes[id] = oldLoc+"-"+newLoc;
         broadcastVotes();
     } else {
