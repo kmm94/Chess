@@ -10,6 +10,7 @@ var currentSide = "white";
 var clientAlignment = {};
 var blackCount = 0;
 var whiteCount = 0;
+var clientVotes = {};
 
 var server = http.createServer(function (request, response) {
 });
@@ -34,10 +35,10 @@ wsServer.on('request', function (request) {
     connection.sendUTF(JSON.stringify("Welcome to the gameserver"));
 
     if (whiteCount > blackCount) {
-        clientAlignment[connection] = "black";
+        clientAlignment[id] = "black";
         blackCount++;
     } else {
-        clientAlignment[connection] = "white";
+        clientAlignment[id] = "white";
         whiteCount++;
     }
 
@@ -47,7 +48,7 @@ wsServer.on('request', function (request) {
 
     connection.on('close', function (reasonCode, description) {
         delete clients[id];
-        if (clientAlignment[connection] === "black") {
+        if (clientAlignment[id] === "black") {
             blackCount--;
         } else {
             whiteCount--;
@@ -87,11 +88,64 @@ function swapSide() {
     broadcastCurrentSide();
 }
 
+function performMove() {
+    var moves = sumVotes();
+    if(Object.keys(moves)[0] === undefined || Object.keys(moves)[0] === null) return false;
+    console.log(Object.keys(moves)[0].split("-")[0], Object.keys(moves)[0].split("-")[1]);
+    broadcastMove(Object.keys(moves)[0].split("-")[0], Object.keys(moves)[0].split("-")[1]);
+    clientVotes = {};
+    broadcastVotes();
+    return true;
+}
+
+function sortDictionaryByValue(dictionary) {
+    var keys = Object.keys(dictionary);
+    var i, len = keys.length;
+    keys.sort();
+    var sortedDict = [];
+    for (i = 0; i < len; i++)
+    {
+        k = keys[i];
+        sortedDict.push({'key': k, 'value':dictionary[k]});
+    }
+    return sortedDict;
+}
+
+function sumVotes() {
+    var moves = {};
+    for (var id in clientVotes) {
+        if (clientVotes.hasOwnProperty(id)) {
+            console.log(clientVotes[id]);
+            if(clientVotes[id] in moves) {
+                moves[clientVotes[id]] += 1;
+            } else {
+                moves[clientVotes[id]] = 1;
+            }
+        }
+    }
+    moves = sortDictionaryByValue(moves);
+    return moves;
+}
+
+function sendMovesList(client, moves) {
+    client.sendUTF(JSON.stringify({action: "movesList", moves: JSON.stringify(moves)}));
+}
+
+function broadcastVotes() {
+    var moves = sumVotes();
+    clients.forEach(function (client) {
+        sendMovesList(client, moves);
+    });
+
+}
+
 function countdownTimer() {
     if (timeLeft === 0) {
         //TODO IMPLEMENT SERVERSIDE MOVING
         timeLeft = TIME_PER_TURNS;
-        swapSide();
+        if(performMove() === true) {
+            swapSide();
+        }
         broadcastTimeLeft();
         return;
     }
@@ -130,7 +184,7 @@ function handleIncomingMessage(connection, data) {
     }
 
     if (message.action === "move") {
-        voteMove(connection, message.oldLocation, message.newLocation)
+        voteMove(clients.indexOf(connection), message.oldLocation, message.newLocation)
     } else if (message.action === "newBoard") {
         sendBoard(connection);
     } else if (message.action === "timeLeft") {
@@ -144,11 +198,12 @@ function sendErrorMessage(client, message) {
     client.sendUTF(JSON.stringify({action: "error", message: message.toString()}))
 }
 
-function voteMove(client, oldLoc, newLoc) {
-    if (clientAlignment[client] === currentSide) {
-        broadcastMove(oldLoc, newLoc);
+function voteMove(id, oldLoc, newLoc) {
+    if (clientAlignment[id] === currentSide) { //TODO Implement so you can only move your own side
+        clientVotes[id] = oldLoc+"-"+newLoc;
+        broadcastVotes();
     } else {
-        sendErrorMessage(client, "Not your turn yet");
+        sendErrorMessage(clients[id], "Not your turn yet");
     }
 }
 

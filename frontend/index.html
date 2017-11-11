@@ -27,7 +27,7 @@
     <tr>
         <th>
             <h1>Current turn:
-                <div id="currentTurn"></div>
+                <div id="currentSide"></div>
             </h1>
         </th>
     </tr>
@@ -81,7 +81,6 @@
 
     function handleServerMessage(event) {
         var message = JSON.parse(event.data);
-        console.log(message);
 
         if (message.action === "move") {
             board.move(message.oldLocation + "-" + message.newLocation);
@@ -92,7 +91,15 @@
         } else if(message.action === "error") {
             alert(message);
         } else if(message.action === "currentSide") {
-            document.getElementById("currentTurn").innerHTML = message.currentSide;
+            document.getElementById("currentSide").innerHTML = message.currentSide;
+        } else if(message.action === "movesList") {
+            document.getElementById("movesList").innerHTML = "";
+            var parsedMoves = JSON.parse(message.moves);
+            for (var move in parsedMoves) {
+                if (parsedMoves.hasOwnProperty(move)) {
+                    document.getElementById("movesList").innerHTML += "<p>" + parsedMoves[move].key + ": " + parsedMoves[move].value + " votes </p>";
+                }
+            }
         }
     }
 
@@ -100,10 +107,15 @@
         ws.send(JSON.stringify({action: "timeLeft"}));
     }
 
+    function requestCurrentSide() {
+        ws.send(JSON.stringify({action: "currentSide"}));
+    }
+
     ws.onopen = function (event) {
         //TODO Implement this on the backend
         //ws.send(JSON.stringify({action: "newBoard"}));
         requestTime();
+        requestCurrentSide();
     };
 
     ws.addEventListener("message", function (e) {
