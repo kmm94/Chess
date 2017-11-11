@@ -19,6 +19,12 @@ function populateMap() {
     }
 }
 
+function initialiseBoard() {
+    populateMap();
+    addWhitePieces();
+    addBlackPieces();
+}
+
 function movePieceByCoord(from, to) {
     var piece = map[from.getPos()].getPiece();
     if (piece === undefined) {
@@ -562,6 +568,56 @@ function calcThreat() {
     }
 }
 
+function addBlackPieces() {
+    var team = "Black"
+    var position = new Position("A", 8)
+    addToMap(new Rook(position, team), position);
+    var position = new Position("B", 8)
+    addToMap(new Knight(position, team), position);
+    var position = new Position("C", 8)
+    addToMap(new Bishop(position, team), position);
+    var position = new Position("D", 8)
+    addToMap(new Queen(position, team), position);
+    var position = new Position("E", 8)
+    addToMap(new King(position, team), position);
+    var position = new Position("F", 8)
+    addToMap(new Bishop(position, team), position);
+    var position = new Position("G", 8)
+    addToMap(new Knight(position, team), position);
+    var position = new Position("H", 8)
+    addToMap(new Rook(position, team), position);
 
-populateMap();
+    //pawns
+    for (i = 0; i < 8; i++) {
+        var position = new Position(moveXpos("A", i), 7);
+        addToMap(new Pawn(position, team), position);
+    }
+}
+
+function  {
+    var team = "White"
+    var position = new Position("A", 1)
+    addToMap(new Rook(position, team), position);
+    var position = new Position("B", 1)
+    addToMap(new Knight(position, team), position);
+    var position = new Position("C", 1)
+    addToMap(new Bishop(position, team), position);
+    var position = new Position("D", 1)
+    addToMap(new Queen(position, team), position);
+    var position = new Position("E", 1)
+    addToMap(new King(position, team), position);
+    var position = new Position("F", 1)
+    addToMap(new Bishop(position, team), position);
+    var position = new Position("G", 1)
+    addToMap(new Knight(position, team), position);
+    var position = new Position("H", 1)
+    addToMap(new Rook(position, team), position);
+
+    //pawns
+    for (i = 0; i < 8; i++) {
+        var position = new Position(moveXpos("A", i), 2);
+        addToMap(new Pawn(position, team), position);
+    }
+}
+
 
