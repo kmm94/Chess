@@ -9,7 +9,7 @@
 <body>
 <table width="100%">
     <tr>
-        <th><h1>Board</h1></th>
+        <th><h1>Board</h1> <div id="color"></div></th>
         <th>
             <h1>Time left:
                 <div id="time" style=""></div>
@@ -22,6 +22,13 @@
         </th>
         <th>
             <div id="movesList" style="width: 200px"></div>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <h1>Current turn:
+                <div id="currentSide"></div>
+            </h1>
         </th>
     </tr>
 </table>
@@ -46,8 +53,8 @@
     $(document).ready(init);
 
 
-    var onDrop = function(newLocation, oldLocation, source, spiece, position, orientation) {
-        if(oldLocation === newLocation) return;
+    var onDrop = function (newLocation, oldLocation, source, spiece, position, orientation) {
+        if (oldLocation === newLocation) return;
         sendMove(oldLocation, newLocation);
         return 'snapback';
     };
@@ -56,9 +63,9 @@
         document.getElementById("time").innerHTML = timeLeft + " seconds";
     }
 
-    var ws = new WebSocket('ws://'+window.location.hostname+':5000', 'echo-protocol');
+    var ws = new WebSocket('ws://' + window.location.hostname + ':5000', 'echo-protocol');
 
-    function sendMove(oldLoc, newLoc){
+    function sendMove(oldLoc, newLoc) {
         var message = JSON.stringify({action: "move", oldLocation: newLoc, newLocation: oldLoc});
         ws.send(message);
     }
@@ -74,14 +81,27 @@
 
     function handleServerMessage(event) {
         var message = JSON.parse(event.data);
-        console.log(message);
 
-        if(message.action === "move") {
+        if (message.action === "move") {
             board.move(message.oldLocation + "-" + message.newLocation);
-        } else if(message.action === "newBoard") {
+        } else if (message.action === "newBoard") {
             board.position(message.board);
-        } else if(message.action === "timeLeft") {
+        } else if (message.action === "timeLeft") {
             updateTimer(message.time);
+        } else if(message.action === "error") {
+            alert(message.message);
+        } else if(message.action === "currentSide") {
+            document.getElementById("currentSide").innerHTML = message.currentSide;
+        } else if(message.action === "movesList") {
+            document.getElementById("movesList").innerHTML = "";
+            var parsedMoves = JSON.parse(message.moves);
+            for (var move in parsedMoves) {
+                if (parsedMoves.hasOwnProperty(move)) {
+                    document.getElementById("movesList").innerHTML += "<p>" + parsedMoves[move].key + ": " + parsedMoves[move].value + " votes </p>";
+                }
+            }
+        } else if(message.action === "color") {
+            document.getElementById("color").innerHTML = "Your color is " + message.color;
         }
     }
 
@@ -89,13 +109,18 @@
         ws.send(JSON.stringify({action: "timeLeft"}));
     }
 
+    function requestCurrentSide() {
+        ws.send(JSON.stringify({action: "currentSide"}));
+    }
+
     ws.onopen = function (event) {
         //TODO Implement this on the backend
         //ws.send(JSON.stringify({action: "newBoard"}));
         requestTime();
+        requestCurrentSide();
     };
 
-    ws.addEventListener("message", function(e) {
+    ws.addEventListener("message", function (e) {
         handleServerMessage(e);
     });
 
