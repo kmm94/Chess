@@ -85,7 +85,8 @@
         if (message.action === "move") {
             board.move(message.oldLocation + "-" + message.newLocation);
         } else if (message.action === "newBoard") {
-            board.position(message.board);
+            console.log(JSON.parse(message.board))
+            board.position(JSON.parse(message.board));
         } else if (message.action === "timeLeft") {
             updateTimer(message.time);
         } else if(message.action === "error") {
@@ -113,11 +114,15 @@
         ws.send(JSON.stringify({action: "currentSide"}));
     }
 
+    function requestBoard() {
+        ws.send(JSON.stringify({action: "newBoard"}));
+    }
+
     ws.onopen = function (event) {
         //TODO Implement this on the backend
-        //ws.send(JSON.stringify({action: "newBoard"}));
         requestTime();
         requestCurrentSide();
+        requestBoard();
     };
 
     ws.addEventListener("message", function (e) {

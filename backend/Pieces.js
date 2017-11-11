@@ -31,7 +31,7 @@ function getBoard() {
     var guiPos = {};
     for (i = 0; i < livingPieces.length; i++) {
         var piece = livingPieces[i];
-        guiPos[piece.getStringPos()] = piece.getPieceName();
+        guiPos[piece.getStringPos().toLowerCase()] = piece.getPieceName();
     }
     return guiPos;
 }

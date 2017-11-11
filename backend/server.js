@@ -146,7 +146,6 @@ function broadcastVotes() {
 
 function countdownTimer() {
     if (timeLeft === 0) {
-        //TODO IMPLEMENT SERVERSIDE MOVING
         timeLeft = TIME_PER_TURNS;
         if(performMove() === true) {
             swapSide();
@@ -160,7 +159,7 @@ function countdownTimer() {
 
 
 function sendBoard(client) {
-    client.sendUTF(JSON.stringify({action: "newBoard", board: board.position()}));
+    client.sendUTF(JSON.stringify({action: "newBoard", board: JSON.stringify(board.getBoard())}));
 }
 
 function broadcastTimeLeft() {
