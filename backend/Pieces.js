@@ -64,8 +64,6 @@ function addToMap(Piece, Position) {
 
 function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
     space = map[Position.getPos()];
-    console.log(space);
-
     if (space.getPiece() === undefined) {
         return null;
     } else {
@@ -199,12 +197,8 @@ class Piece {
 }
 
 
- class Pawn {
-    constructor(Position, Team){
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
+ class Pawn extends Piece {
+
     possiblemoves(){
         var dictPossibleMoves = [];
 
@@ -272,15 +266,6 @@ class Piece {
         return dictPossibleMoves;
     }
 
-    setPos(Position) {
-        this.position = Position;
-    }
-
-     getStringPos(){
-         return this.position.getPos();
-     }
-
-
     upgrade() {
         return new Queen(new Position(this.position.getX(), this.position.getY()), new Team(this.team));
     }
@@ -296,20 +281,7 @@ class Piece {
 
 
 
-class Rook {
-    constructor(Position, Team){
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
-
-    setPos(Position){
-        this.position = Position;
-    }
-
-    getStringPos(){
-        return this.position.getPos();
-    }
+class Rook extends Piece {
 
     possiblemoves(){
         var dict = [];
@@ -327,19 +299,7 @@ class Rook {
     }
 }
 
-class Knight {
-    constructor(Position, Team){
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
-    setPos(Position) {
-        this.position = Position;
-    }
-
-    getStringPos(){
-        return this.position.getPos();
-    }
+class Knight extends Piece {
 
     moveSides(right, direction, moves) {
         var xPos = this.position.getX();
@@ -371,26 +331,11 @@ class Knight {
         this.moveSides(-1, 2, moves);
         this.moveSides(-1, -2, moves);
 
-
-
         return moves;
     }
 }
 
-class Bishop {
-    constructor(Position, Team){
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
-
-    setPos(Position) {
-        this.position = Position;
-    }
-
-    getStringPos(){
-        return this.position.getPos();
-    }
+class Bishop extends Piece {
 
     possiblemoves(){
         var dict = [];
@@ -408,20 +353,7 @@ class Bishop {
     }
 }
 
-class Queen {
-    constructor(Position, Team) {
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
-
-    setPos(Position) {
-        this.position = Position;
-    }
-
-    getStringPos(){
-        return this.position.getPos();
-    }
+class Queen extends Piece {
 
     possiblemoves(){
         var dict = [];
@@ -447,20 +379,7 @@ class Queen {
     }
 }
 
-class King {
-    constructor(Position, Team){
-        this.team = Team;
-        this.position = Position;
-        addToMap(this, Position);
-    }
-
-    setPos(Position) {
-        this.position = Position;
-    }
-
-    getStringPos(){
-        return this.position.getPos();
-    }
+class King extends Piece {
 
     isKingMovePosibble(pos, moves) {
         if (map[pos.getPos()] !== undefined && (isVacant(pos) === null || isVacant(pos).team !== this.team)) {
@@ -645,5 +564,6 @@ function addWhitePieces() {
     }
 }
 
-
+initialiseBoard();
+movePieceByCoord(new Position("A", 2), new Position("A", 3));
 
