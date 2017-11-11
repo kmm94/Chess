@@ -1,4 +1,4 @@
-var map = {};
+var map = [];
 var livingPieces = [];
 var whitesTurn = true;
 
@@ -17,6 +17,15 @@ function populateMap() {
             break;
         }
     }
+}
+
+function getBoard() {
+    var guiPos = {};
+    for (i = 0; i < livingPieces.length; i++) {
+        var piece = livingPieces[i];
+        guiPos[piece.getStringPos()] = piece.getPieceName();
+    }
+    return guiPos;
 }
 
 function initialiseBoard() {
@@ -185,6 +194,10 @@ class Piece {
         this.position = Position;
     }
 
+    getPieceName() {
+        return "Name not assigned";
+    }
+
     possiblemoves(){
         return [];
     }
@@ -196,6 +209,14 @@ class Piece {
 
 
  class Pawn extends Piece {
+
+     getPieceName() {
+         if (this.team === "White") {
+             return "wP";
+         } else {
+             return "bP";
+         }
+     }
 
     possiblemoves(){
         var dictPossibleMoves = [];
@@ -281,6 +302,14 @@ class Piece {
 
 class Rook extends Piece {
 
+    getPieceName() {
+        if (this.team === "White") {
+            return "wR";
+        } else {
+            return "bR";
+        }
+    }
+
     possiblemoves(){
         var dict = [];
         var xPos = this.position.getX();
@@ -298,6 +327,14 @@ class Rook extends Piece {
 }
 
 class Knight extends Piece {
+
+    getPieceName() {
+        if (this.team === "White") {
+            return "wN";
+        } else {
+            return "bN";
+        }
+    }
 
     moveSides(right, direction, moves) {
         var xPos = this.position.getX();
@@ -335,6 +372,14 @@ class Knight extends Piece {
 
 class Bishop extends Piece {
 
+    getPieceName() {
+        if (this.team === "White") {
+            return "wB";
+        } else {
+            return "bB";
+        }
+    }
+
     possiblemoves(){
         var dict = [];
         var xPos = this.position.getX();
@@ -352,6 +397,14 @@ class Bishop extends Piece {
 }
 
 class Queen extends Piece {
+
+    getPieceName() {
+        if (this.team === "White") {
+            return "wQ";
+        } else {
+            return "bQ";
+        }
+    }
 
     possiblemoves(){
         var dict = [];
@@ -378,6 +431,14 @@ class Queen extends Piece {
 }
 
 class King extends Piece {
+
+    getPieceName() {
+        if (this.team === "White") {
+            return "wK";
+        } else {
+            return "bK";
+        }
+    }
 
     isKingMovePosibble(pos, moves) {
         if (map[pos.getPos()] !== undefined && (isVacant(pos) === null || isVacant(pos).team !== this.team)) {
@@ -565,4 +626,4 @@ function addWhitePieces() {
 
 initialiseBoard();
 movePieceByCoord(new Position("A", 2), new Position("A", 3));
-
+console.log(getBoard());
