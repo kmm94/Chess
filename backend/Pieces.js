@@ -19,6 +19,53 @@ function populateMap() {
     }
 }
 
+function movePieceByCoord(from, to) {
+    var piece = map[from.getPos()].getPiece();
+    if (piece === undefined) {
+        return false;
+    }
+    if (piece.getTeam() == "White" && !whitesTurn) {
+        return false;
+    } else if (piece.getTeam() == "Black" && whitesTurn) {
+        return false;
+    } else {
+        return movePiece(piece, to);
+    }
+}
+
+
+/**
+ * Returns true if the move was succesful. Returns false if the move wasn't made.
+ * should TODO send the move to server!
+ */
+function movePiece(Piece, Position) {
+    var moves = Piece.possiblemoves();
+    for (i = 0; i <= moves.length; i++) {
+        var pos = moves[i];
+        if (pos.isEquals(Position)) {
+            var Space = map[Position.getPos()];
+            return Space.setPiece(Piece);
+        }
+    }
+    return false;
+}
+
+function addToMap(Piece, Position) {
+    livingPieces.push(Piece);
+    var Space = map[Position.getPos()];
+    return Space.setPiece(Piece);
+}
+
+function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
+    space = map[Position.getPos()];
+    if (space.getPiece() === null) {
+        return null;
+    } else {
+        return space.getPiece();
+    }
+    return true;
+}
+
 class Position {
     constructor(xpos, ypos) {
         this.xpos = xpos;
@@ -121,65 +168,6 @@ class Team {
     getTeam() {
         return this.team;
     }
-}
-
-function movePieceByCoord(from, to) {
-    var piece = map[from.getPos()].getPiece();
-    if (piece === undefined) {
-        return false;
-    }
-    if (piece.getTeam() == "White" && !whitesTurn) {
-        return false;
-    } else if (piece.getTeam() == "Black" && whitesTurn) {
-        return false;
-    } else {
-        return movePiece(piece, to);
-    }
-}
-
-
-/**
- * Returns true if the move was succesful. Returns false if the move wasn't made.
- * should TODO send the move to server!
- */
-function movePiece(Piece, Position) {
-    var moves = Piece.possiblemoves();
-    for (i = 0; i <= moves.length; i++) {
-        var pos = moves[i];
-        if (pos.isEquals(Position)) {
-            var Space = map[Position.getPos()];
-            return Space.setPiece(Piece);
-        }
-    }
-    return false;
-}
-
-function addToMap(Piece, Position) {
-    livingPieces.push(Piece);
-    var Space = map[Position.getPos()];
-    return Space.setPiece(Piece);
-}
-
-function isVacant(Position) {//checks if the given position has a piece on it returns false if there is a piece
-    space = map[Position.getPos()];
-    if (space.getPiece() === null) {
-        return null;
-    } else {
-        return space.getPiece();
-    }
-    return true;
-}
-function moveXpos(xPos, toTheRight) {
-    var xPositions = ["A","B", "C", "D", "E", "F", "G", "H"];
-    var x = xPos.toUpperCase();
-    var pos = xPositions.indexOf(x)+1;
-    if(toTheRight === true) toTheRight = 1;
-    else if(toTheRight === false) toTheRight = -1;
-
-    if(pos+toTheRight <= 0) return null;
-    else if(pos+toTheRight >= 9) return null;
-
-    return xPositions[pos+toTheRight-1];
 }
 
  class Pawn {
@@ -538,7 +526,18 @@ function crossmoves(dict,piece, direction, toTheRight) {
     return dict;
 }
 
+function moveXpos(xPos, toTheRight) {
+    var xPositions = ["A","B", "C", "D", "E", "F", "G", "H"];
+    var x = xPos.toUpperCase();
+    var pos = xPositions.indexOf(x)+1;
+    if(toTheRight === true) toTheRight = 1;
+    else if(toTheRight === false) toTheRight = -1;
 
+    if(pos+toTheRight <= 0) return null;
+    else if(pos+toTheRight >= 9) return null;
+
+    return xPositions[pos+toTheRight-1];
+}
 
 function calcThreat() {
     var keys = Object.keys(map);
