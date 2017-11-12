@@ -1,7 +1,7 @@
 var map = [];
 var livingPieces = [];
 var whitesTurn = true;
-var gameOver = {isGameOver: false, winner: "none"};
+var gameOverObject = {isGameOver: false, winner: "none"};
 
 module.exports = {
     initialiseBoard: initialiseBoard,
@@ -9,7 +9,7 @@ module.exports = {
     getColor: getColor,
     isValidMove: isValidMove,
     movePieceByCoord: movePieceByCoord,
-    isGameOver: isGameOver,
+    gameOver: gameOver,
     resetBoard: resetBoard,
 }
 
@@ -17,12 +17,12 @@ function resetBoard() {
     map = [];
     livingPieces = [];
     whitesTurn = true;
-    gameOver = {isGameOver: false, winner: "none"};
+    gameOverObject = {isGameOver: false, winner: "none"};
     initialiseBoard();
 }
 
-function isGameOver() {
-    return gameOver;
+function gameOver() {
+    return gameOverObject;
 }
 
 function populateMap() {
@@ -218,11 +218,10 @@ class Space {
             if (this.getPiece().team !== piece.team) {
                 if (this.piece instanceof King) {
                     if (whitesTurn) {
-                        gameOver = {isGameOver: true, winner: "white"};
+                        gameOverObject = {isGameOver: true, winner: "white"};
                     } else {
-                        gameOver = {isGameOver: true, winner: "black"};
+                        gameOverObject = {isGameOver: true, winner: "black"};
                     }
-                }
                 }
                 var index = livingPieces.indexOf(this.piece);
                 livingPieces.splice(index, 1);
