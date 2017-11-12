@@ -106,7 +106,7 @@ function performMove() {
     broadcastMove(move.split("-")[0], move.split("-")[1]);
     clientVotes = {};
     broadcastVotes();
-    if(board.isGameOver().isGameOver) {
+    if(board.gameOver().isGameOver) {
         board.resetBoard();
         broadcastBoard();
     }
