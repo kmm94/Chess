@@ -1,6 +1,7 @@
 var map = [];
 var livingPieces = [];
 var whitesTurn = true;
+var gameOver = {isGameOver: false, winner: "none"};
 
 module.exports = {
     initialiseBoard: initialiseBoard,
@@ -8,6 +9,20 @@ module.exports = {
     getColor: getColor,
     isValidMove: isValidMove,
     movePieceByCoord: movePieceByCoord,
+    isGameOver: isGameOver,
+    resetBoard: resetBoard,
+}
+
+function resetBoard() {
+    map = [];
+    livingPieces = [];
+    whitesTurn = true;
+    gameOver = {isGameOver: false, winner: "none"};
+    initialiseBoard();
+}
+
+function isGameOver() {
+    return gameOver;
 }
 
 function populateMap() {
@@ -201,6 +216,13 @@ class Space {
         if (this.piece !== undefined) {
             var a = this.piece;
             if (this.getPiece().team !== piece.team) {
+                if (this.piece instanceof King) {
+                    if (whitesTurn) {
+                        gameOver = {isGameOver: true, winner: "White"};
+                    } else {
+                        gameOver = {isGameOver: true, winner: "Black"};
+                    }
+                }
                 var index = livingPieces.indexOf(this.piece);
                 livingPieces.splice(index, 1);
                 this.piece = piece;
@@ -252,7 +274,6 @@ class Piece {
         return this.position.getPos();
     }
 }
-
 
  class Pawn extends Piece {
 
@@ -496,7 +517,6 @@ class King extends Piece {
     }
 
     possiblemoves() {
-        calcThreat();
         var moves = [];
         //up
         var pos = new Position(this.position.getX(), this.position.getY() + 1);
