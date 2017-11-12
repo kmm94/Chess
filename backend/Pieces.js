@@ -218,10 +218,11 @@ class Space {
             if (this.getPiece().team !== piece.team) {
                 if (this.piece instanceof King) {
                     if (whitesTurn) {
-                        gameOver = {isGameOver: true, winner: "White"};
+                        gameOver = {isGameOver: true, winner: "white"};
                     } else {
-                        gameOver = {isGameOver: true, winner: "Black"};
+                        gameOver = {isGameOver: true, winner: "black"};
                     }
+                }
                 }
                 var index = livingPieces.indexOf(this.piece);
                 livingPieces.splice(index, 1);
