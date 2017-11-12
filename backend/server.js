@@ -92,6 +92,12 @@ function swapSide() {
     broadcastCurrentSide();
 }
 
+function broadcastBoard() {
+    clients.forEach(function (client) {
+        sendBoard(client);
+    });
+}
+
 function performMove() {
     var moves = sumVotes();
     if(moves.length === 0) return false;
@@ -100,6 +106,10 @@ function performMove() {
     broadcastMove(move.split("-")[0], move.split("-")[1]);
     clientVotes = {};
     broadcastVotes();
+    if(board.isGameOver().isGameOver) {
+        board.resetBoard();
+        broadcastBoard();
+    }
     return true;
 }
 
