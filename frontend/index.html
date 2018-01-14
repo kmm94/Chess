@@ -38,6 +38,7 @@
 <script src="js/chessboard-0.3.0.js"></script>
 <script src="js/jquery-3.2.1.js"></script>
 <script src="js/json3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 <script>
     var board;
     var init = function () {
@@ -63,7 +64,7 @@
         document.getElementById("time").innerHTML = timeLeft + " seconds";
     }
 
-    var ws = new WebSocket('ws://' + window.location.hostname + ':5000', 'echo-protocol');
+    var ws = io.connect('http://localhost:5001');
 
     function sendMove(oldLoc, newLoc) {
         var message = JSON.stringify({action: "move", oldLocation: newLoc, newLocation: oldLoc});
@@ -80,7 +81,8 @@
     }
 
     function handleServerMessage(event) {
-        var message = JSON.parse(event.data);
+        console.log(event);
+        var message = JSON.parse(event);
 
         if (message.action === "move") {
             board.move(message.oldLocation + "-" + message.newLocation);
@@ -117,17 +119,30 @@
     function requestBoard() {
         ws.send(JSON.stringify({action: "newBoard"}));
     }
-
-    ws.onopen = function (event) {
-        //TODO Implement this on the backend
-        requestTime();
-        requestCurrentSide();
-        requestBoard();
-    };
-
+    var firstConnetion = true;
     ws.addEventListener("message", function (e) {
+        if(firstConnetion) {
+            requestTime();
+            requestCurrentSide();
+            requestBoard();
+            console.log("request send");
+            firstConnetion = false;
+        }
         handleServerMessage(e);
+
     });
+
+//    ws.onOpen = function (event) {
+//
+//            //TODO Implement this on the backend
+//            requestTime();
+//            requestCurrentSide();
+//            requestBoard();
+//            console.log("request send");
+//        }
+//
+//    });
+
 
 </script>
 </html>

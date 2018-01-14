@@ -1,6 +1,7 @@
 http = require('http');
+var server = http.createServer();
 
-var WebSocketServer = require('websocket').server;
+var WebSocketServer = require('socket.io')(server);
 var clients = [];
 var board = require('./Pieces');
 var DEBUG = true;
@@ -11,30 +12,25 @@ var clientAlignment = {};
 var blackCount = 0;
 var whiteCount = 0;
 var clientVotes = {};
+var portnr = 5001;
 
 board.initialiseBoard();
 
-var server = http.createServer(function (request, response) {
-});
-
-server.listen(5000, function () {
+server.listen(portnr, function () {
     console.log("I am running!");
 });
 
-wsServer = new WebSocketServer({
-    httpServer: server
-});
 
-wsServer.on('request', function (request) {
+WebSocketServer.on('connection', function (request) {
     if (timerRunning === false) {
         startTimer();
     }
 
-    var connection = request.accept('echo-protocol', request.origin);
+    var connection = request;
     clients.push(connection);
     var id = clients.length - 1;
-    console.log((new Date()) + ' Connection accepted [' + id + ']');
-    connection.sendUTF(JSON.stringify("Welcome to the gameserver"));
+    console.log((new Date()) + ' Connection accepted [' + id + ']'+ connection.remoteAddress);
+    connection.send(JSON.stringify("Welcome to the gameserver"));
 
     if (whiteCount > blackCount) {
         clientAlignment[id] = "black";
@@ -44,13 +40,13 @@ wsServer.on('request', function (request) {
         whiteCount++;
     }
 
-    connection.sendUTF(JSON.stringify({action: "color", color: clientAlignment[id]}))
+    connection.send(JSON.stringify({action: "color", color: clientAlignment[id]}))
 
     connection.on('message', function (message) {
         handleIncomingMessage(connection, message);
     });
 
-    connection.on('close', function (reasonCode, description) {
+    connection.on('disconnect', function (data) {
         delete clients[id];
         if (clientAlignment[id] === "black") {
             blackCount--;
@@ -133,7 +129,7 @@ function sumVotes() {
 }
 
 function sendMovesList(client, moves) {
-    client.sendUTF(JSON.stringify({action: "movesList", moves: JSON.stringify(moves)}));
+    client.send(JSON.stringify({action: "movesList", moves: JSON.stringify(moves)}));
 }
 
 function broadcastVotes() {
@@ -159,29 +155,30 @@ function countdownTimer() {
 
 
 function sendBoard(client) {
-    client.sendUTF(JSON.stringify({action: "newBoard", board: JSON.stringify(board.getBoard())}));
+    client.send(JSON.stringify({action: "newBoard", board: JSON.stringify(board.getBoard())}));
 }
 
 function broadcastTimeLeft() {
     clients.forEach(function (client) {
         sendTimeLeft(client);
     })
+
 }
 
 function sendTimeLeft(client) {
-    client.sendUTF(JSON.stringify({action: "timeLeft", time: timeLeft}));
+    client.send(JSON.stringify({action: "timeLeft", time: timeLeft}));
 }
 
 function sendCurrentSide(client) {
-    client.sendUTF(JSON.stringify({action: "currentSide", currentSide: currentSide}));
+    client.send(JSON.stringify({action: "currentSide", currentSide: currentSide}));
 }
 
 function handleIncomingMessage(connection, data) {
-    if (!isValidMessage(data.utf8Data)) {
-        if (DEBUG) console.log("INVALID: " + JSON.stringify(data.utf8Data));
+    if (!isValidMessage(data)) {
+        if (DEBUG) console.log("INVALID: " + JSON.stringify(data));
         return;
     }
-    var message = JSON.parse(data.utf8Data);
+    var message = JSON.parse(data);
     if (DEBUG) {
         console.log("VALID: " + JSON.stringify(message));
         console.log(message.action);
@@ -199,7 +196,7 @@ function handleIncomingMessage(connection, data) {
 }
 
 function sendErrorMessage(client, message) {
-    client.sendUTF(JSON.stringify({action: "error", message: message}))
+    client.send(JSON.stringify({action: "error", message: message}))
 }
 
 function voteMove(id, oldLoc, newLoc) {
@@ -221,6 +218,7 @@ function isValidMessage(data) {
     try {
         JSON.parse(data);
     } catch (e) {
+        console.log(e)
         return false;
     }
     return true;
@@ -228,8 +226,8 @@ function isValidMessage(data) {
 
 function broadcastMove(oldLocation, newLocation) {
     clients.forEach(function (client) {
-        client.sendUTF(JSON.stringify({action: "move", oldLocation: oldLocation, newLocation: newLocation}));
+        client.send(JSON.stringify({action: "move", oldLocation: oldLocation, newLocation: newLocation}));
     });
 }
 
-console.log("Game server running at port 5000\n");
+console.log("Game server running at port " + portnr);
